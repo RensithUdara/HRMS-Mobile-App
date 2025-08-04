@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:intl/intl.dart';
 
 // Services
 import 'services/auth_service.dart';
@@ -17,9 +16,6 @@ import 'controllers/auth_bloc.dart';
 // Config
 import 'config/app_theme.dart';
 import 'config/app_router.dart';
-
-// Views
-import 'views/splash_screen.dart';
 
 // Firebase Options (you need to add this file after setting up Firebase)
 // import 'firebase_options.dart';
