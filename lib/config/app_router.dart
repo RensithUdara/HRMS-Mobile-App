@@ -17,58 +17,8 @@ import '../views/auth/profile_setup_screen.dart';
 import '../views/main/main_screen.dart';
 import '../views/dashboard/dashboard_screen.dart';
 
-// Employee Views
-import '../views/employee/employee_list_screen.dart';
-import '../views/employee/employee_detail_screen.dart';
-import '../views/employee/employee_form_screen.dart';
-
-// Attendance Views
-import '../views/attendance/attendance_screen.dart';
-import '../views/attendance/check_in_screen.dart';
-import '../views/attendance/attendance_history_screen.dart';
-import '../views/attendance/attendance_report_screen.dart';
-
-// Leave Views
-import '../views/leave/leave_screen.dart';
-import '../views/leave/leave_request_screen.dart';
-import '../views/leave/leave_history_screen.dart';
-import '../views/leave/leave_approval_screen.dart';
-
-// Payroll Views
-import '../views/payroll/payroll_screen.dart';
-import '../views/payroll/payroll_detail_screen.dart';
-import '../views/payroll/payslip_screen.dart';
-
-// Performance Views
-import '../views/performance/performance_screen.dart';
-import '../views/performance/performance_review_screen.dart';
-import '../views/performance/goal_setting_screen.dart';
-
-// Training Views
-import '../views/training/training_screen.dart';
-import '../views/training/training_detail_screen.dart';
-import '../views/training/training_enrollment_screen.dart';
-
-// Communication Views
-import '../views/communication/communication_screen.dart';
-import '../views/communication/announcement_screen.dart';
-import '../views/communication/chat_screen.dart';
-
-// Settings Views
-import '../views/settings/settings_screen.dart';
-import '../views/settings/profile_screen.dart';
-import '../views/settings/notification_settings_screen.dart';
-import '../views/settings/security_settings_screen.dart';
-
-// Admin Views
-import '../views/admin/admin_dashboard_screen.dart';
-import '../views/admin/user_management_screen.dart';
-import '../views/admin/company_settings_screen.dart';
-import '../views/admin/reports_screen.dart';
-
-// Error Views
-import '../views/error/not_found_screen.dart';
-import '../views/error/unauthorized_screen.dart';
+// All other views (using placeholder screens for now)
+import '../views/placeholder_screens.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
