@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../utils/exceptions.dart';
 
 /// Notification service for Firebase Cloud Messaging and local notifications
 class NotificationService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _localNotifications =
+      FlutterLocalNotificationsPlugin();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Notification channels for Android
@@ -30,7 +32,8 @@ class NotificationService {
       print('FCM Token: $token');
 
       // Handle background messages
-      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+      FirebaseMessaging.onBackgroundMessage(
+          _firebaseMessagingBackgroundHandler);
 
       // Handle foreground messages
       FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
@@ -67,7 +70,8 @@ class NotificationService {
 
   /// Initialize local notifications
   Future<void> _initializeLocalNotifications() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -125,7 +129,8 @@ class NotificationService {
 
     for (final channel in channels) {
       await _localNotifications
-          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(channel);
     }
   }
@@ -205,7 +210,7 @@ class NotificationService {
   }) async {
     try {
       final batch = _firestore.batch();
-      
+
       for (final userId in userIds) {
         final docRef = _firestore.collection('notifications').doc();
         batch.set(docRef, {
@@ -218,7 +223,7 @@ class NotificationService {
           'createdAt': FieldValue.serverTimestamp(),
         });
       }
-      
+
       await batch.commit();
     } catch (e) {
       throw DatabaseException('Failed to send notifications: $e');
@@ -271,7 +276,8 @@ class NotificationService {
         iOS: iosDetails,
       );
 
-      await _localNotifications.show(id, title, body, details, payload: payload);
+      await _localNotifications.show(id, title, body, details,
+          payload: payload);
     } catch (e) {
       throw Exception('Failed to show local notification: $e');
     }
@@ -304,7 +310,8 @@ class NotificationService {
 
       // Note: For scheduling, you might need to use a different package
       // like flutter_local_notifications with timezone support
-      await _localNotifications.show(id, title, body, details, payload: payload);
+      await _localNotifications.show(id, title, body, details,
+          payload: payload);
     } catch (e) {
       throw Exception('Failed to schedule local notification: $e');
     }
@@ -318,9 +325,8 @@ class NotificationService {
         .orderBy('createdAt', descending: true)
         .limit(50)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => {'id': doc.id, ...doc.data()})
-            .toList());
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList());
   }
 
   /// Mark notification as read
@@ -343,7 +349,7 @@ class NotificationService {
           .where('userId', isEqualTo: userId)
           .where('isRead', isEqualTo: false)
           .get();
-      
+
       return snapshot.docs.length;
     } catch (e) {
       throw DatabaseException('Failed to get unread notification count: $e');
@@ -363,7 +369,8 @@ class NotificationService {
     await sendNotificationToUser(
       userId: managerId,
       title: 'New Leave Request',
-      body: '$employeeName has requested $leaveType from $startDate to $endDate',
+      body:
+          '$employeeName has requested $leaveType from $startDate to $endDate',
       data: {
         'type': 'leave_request',
         'action': 'approve_reject',
@@ -382,7 +389,8 @@ class NotificationService {
     await sendNotificationToUser(
       userId: employeeId,
       title: 'Leave Request $status',
-      body: 'Your $leaveType request has been $status${managerName != null ? ' by $managerName' : ''}',
+      body:
+          'Your $leaveType request has been $status${managerName != null ? ' by $managerName' : ''}',
       data: {
         'type': 'leave_response',
         'status': status,
@@ -457,7 +465,7 @@ class NotificationService {
   /// Handle foreground messages
   void _handleForegroundMessage(RemoteMessage message) {
     print('Handling a foreground message: ${message.messageId}');
-    
+
     // Show local notification when app is in foreground
     showLocalNotification(
       id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
