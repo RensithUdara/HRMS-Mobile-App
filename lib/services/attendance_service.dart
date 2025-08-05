@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../models/attendance_model.dart';
@@ -314,7 +315,7 @@ class AttendanceService {
   /// Get location name from coordinates
   Future<String> _getLocationName(Position position) async {
     try {
-      final placemarks = await Geolocator.placemarkFromCoordinates(
+      final placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
       );
