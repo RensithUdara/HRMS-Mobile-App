@@ -5,6 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Controllers
 import '../controllers/auth_bloc.dart';
 
+// Models
+import '../models/user_model.dart';
+
 // Views
 import '../views/splash_screen.dart';
 import '../views/auth/login_screen.dart';
@@ -315,7 +318,7 @@ class AppRouter {
   static String? _redirect(BuildContext context, GoRouterState state) {
     final authBloc = context.read<AuthBloc>();
     final authState = authBloc.state;
-    final currentLocation = state.location;
+    final currentLocation = state.uri.toString();
 
     // Define public routes that don't require authentication
     final publicRoutes = [
@@ -346,7 +349,9 @@ class AppRouter {
       }
       
       // Check if profile setup is required
-      if (!authState.user.isProfileComplete && currentLocation != '/profile-setup') {
+      if (authState.userModel != null && 
+          !authState.userModel!.isProfileComplete && 
+          currentLocation != '/profile-setup') {
         return '/profile-setup';
       }
     } else if (authState is AuthLoading) {
@@ -365,9 +370,11 @@ class AppRouter {
     final authState = authBloc.state;
 
     if (authState is AuthAuthenticated) {
-      final user = authState.user;
+      final userModel = authState.userModel;
       // Check if user has admin or manager role
-      if (user.role != 'admin' && user.role != 'manager') {
+      if (userModel != null && 
+          !userModel.hasRole(UserRole.admin) && 
+          !userModel.hasRole(UserRole.manager)) {
         return '/unauthorized';
       }
     } else {
