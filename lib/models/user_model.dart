@@ -17,8 +17,12 @@ class UserModel extends Equatable {
   final String id;
   final String email;
   final String? phoneNumber;
+  final String? firstName;
+  final String? lastName;
+  final String? profilePhotoUrl;
   final List<UserRole> roles;
   final bool isActive;
+  final bool isProfileComplete;
   final DateTime? lastLoginAt;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -28,8 +32,12 @@ class UserModel extends Equatable {
     required this.id,
     required this.email,
     this.phoneNumber,
+    this.firstName,
+    this.lastName,
+    this.profilePhotoUrl,
     required this.roles,
     this.isActive = true,
+    this.isProfileComplete = false,
     this.lastLoginAt,
     required this.createdAt,
     required this.updatedAt,
@@ -43,8 +51,12 @@ class UserModel extends Equatable {
     String? id,
     String? email,
     String? phoneNumber,
+    String? firstName,
+    String? lastName,
+    String? profilePhotoUrl,
     List<UserRole>? roles,
     bool? isActive,
+    bool? isProfileComplete,
     DateTime? lastLoginAt,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -54,8 +66,12 @@ class UserModel extends Equatable {
       id: id ?? this.id,
       email: email ?? this.email,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      profilePhotoUrl: profilePhotoUrl ?? this.profilePhotoUrl,
       roles: roles ?? this.roles,
       isActive: isActive ?? this.isActive,
+      isProfileComplete: isProfileComplete ?? this.isProfileComplete,
       lastLoginAt: lastLoginAt ?? this.lastLoginAt,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -75,7 +91,17 @@ class UserModel extends Equatable {
         id,
         email,
         phoneNumber,
+        firstName,
+        lastName,
+        profilePhotoUrl,
         roles,
+        isActive,
+        isProfileComplete,
+        lastLoginAt,
+        createdAt,
+        updatedAt,
+        customClaims,
+      ];
         isActive,
         lastLoginAt,
         createdAt,
