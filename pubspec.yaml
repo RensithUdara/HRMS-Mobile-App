@@ -105,13 +105,13 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/fonts/
     - assets/data/
   
-  fonts:
-    - family: Noto Sans Sinhala
-      fonts:
-        - asset: assets/fonts/NotoSansSinhala-Regular.ttf
-    - family: Noto Sans Tamil
-      fonts:
-        - asset: assets/fonts/NotoSansTamil-Regular.ttf
+  # Fonts will be added later when font files are available
+  # fonts:
+  #   - family: Noto Sans Sinhala
+  #     fonts:
+  #       - asset: assets/fonts/NotoSansSinhala-Regular.ttf
+  #   - family: Noto Sans Tamil
+  #     fonts:
+  #       - asset: assets/fonts/NotoSansTamil-Regular.ttf
