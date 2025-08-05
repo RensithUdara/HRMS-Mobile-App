@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+
 import '../models/attendance_model.dart';
 import '../services/firestore_service.dart';
 import '../utils/exceptions.dart';
@@ -26,9 +27,10 @@ class AttendanceService {
   }) async {
     try {
       // Check if already checked in today
-      final todayAttendance = await _firestoreService.getTodayAttendance(employeeId);
+      final todayAttendance =
+          await _firestoreService.getTodayAttendance(employeeId);
       if (todayAttendance != null && todayAttendance.checkInTime != null) {
-        throw BusinessLogicException('Already checked in today');
+        throw const BusinessLogicException('Already checked in today');
       }
 
       Position? position;
@@ -41,7 +43,8 @@ class AttendanceService {
 
         // Verify location is within office premises
         if (!_isWithinOfficeRadius(position)) {
-          throw LocationException('You are not within the office premises');
+          throw const LocationException(
+              'You are not within the office premises');
         }
       }
 
@@ -58,7 +61,7 @@ class AttendanceService {
         checkInLongitude: position?.longitude,
         status: _determineAttendanceStatus(now, isWorkFromHome),
         isWorkFromHome: isWorkFromHome,
-        breaks: [],
+        breaks: const [],
         createdAt: now,
         updatedAt: now,
       );
@@ -98,13 +101,14 @@ class AttendanceService {
   }) async {
     try {
       // Get today's attendance record
-      final todayAttendance = await _firestoreService.getTodayAttendance(employeeId);
+      final todayAttendance =
+          await _firestoreService.getTodayAttendance(employeeId);
       if (todayAttendance == null || todayAttendance.checkInTime == null) {
-        throw BusinessLogicException('Please check in first');
+        throw const BusinessLogicException('Please check in first');
       }
 
       if (todayAttendance.checkOutTime != null) {
-        throw BusinessLogicException('Already checked out today');
+        throw const BusinessLogicException('Already checked out today');
       }
 
       Position? position;
@@ -116,17 +120,19 @@ class AttendanceService {
 
         // Verify location is within office premises
         if (!_isWithinOfficeRadius(position)) {
-          throw LocationException('You are not within the office premises');
+          throw const LocationException(
+              'You are not within the office premises');
         }
       }
 
       final now = DateTime.now();
-      final workingMinutes = now.difference(todayAttendance.checkInTime!).inMinutes;
+      final workingMinutes =
+          now.difference(todayAttendance.checkInTime!).inMinutes;
       final breakMinutes = _calculateTotalBreakMinutes(todayAttendance.breaks);
       final actualWorkingMinutes = workingMinutes - breakMinutes;
 
       // Calculate overtime (assuming 8 hours = 480 minutes standard)
-      final standardWorkingMinutes = 480;
+      const standardWorkingMinutes = 480;
       final overtimeMinutes = actualWorkingMinutes > standardWorkingMinutes
           ? actualWorkingMinutes - standardWorkingMinutes
           : 0;
@@ -160,19 +166,21 @@ class AttendanceService {
     String? reason,
   }) async {
     try {
-      final todayAttendance = await _firestoreService.getTodayAttendance(employeeId);
+      final todayAttendance =
+          await _firestoreService.getTodayAttendance(employeeId);
       if (todayAttendance == null || todayAttendance.checkInTime == null) {
-        throw BusinessLogicException('Please check in first');
+        throw const BusinessLogicException('Please check in first');
       }
 
       if (todayAttendance.checkOutTime != null) {
-        throw BusinessLogicException('Cannot start break after checkout');
+        throw const BusinessLogicException('Cannot start break after checkout');
       }
 
       // Check if there's an ongoing break
-      final ongoingBreak = todayAttendance.breaks.where((b) => b.endTime == null).toList();
+      final ongoingBreak =
+          todayAttendance.breaks.where((b) => b.endTime == null).toList();
       if (ongoingBreak.isNotEmpty) {
-        throw BusinessLogicException('Break already in progress');
+        throw const BusinessLogicException('Break already in progress');
       }
 
       final now = DateTime.now();
@@ -182,7 +190,8 @@ class AttendanceService {
         reason: reason,
       );
 
-      final updatedBreaks = List<BreakRecord>.from(todayAttendance.breaks)..add(newBreak);
+      final updatedBreaks = List<BreakRecord>.from(todayAttendance.breaks)
+        ..add(newBreak);
       final updatedRecord = todayAttendance.copyWith(
         breaks: updatedBreaks,
         updatedAt: now,
@@ -201,15 +210,17 @@ class AttendanceService {
   /// End break
   Future<AttendanceModel> endBreak({required String employeeId}) async {
     try {
-      final todayAttendance = await _firestoreService.getTodayAttendance(employeeId);
+      final todayAttendance =
+          await _firestoreService.getTodayAttendance(employeeId);
       if (todayAttendance == null || todayAttendance.checkInTime == null) {
-        throw BusinessLogicException('Please check in first');
+        throw const BusinessLogicException('Please check in first');
       }
 
       // Find ongoing break
-      final ongoingBreakIndex = todayAttendance.breaks.indexWhere((b) => b.endTime == null);
+      final ongoingBreakIndex =
+          todayAttendance.breaks.indexWhere((b) => b.endTime == null);
       if (ongoingBreakIndex == -1) {
-        throw BusinessLogicException('No ongoing break found');
+        throw const BusinessLogicException('No ongoing break found');
       }
 
       final now = DateTime.now();
@@ -249,7 +260,7 @@ class AttendanceService {
   }) async {
     // Validate QR code
     if (!_isValidOfficeQR(qrData)) {
-      throw ValidationException('Invalid QR code');
+      throw const ValidationException('Invalid QR code');
     }
 
     return await checkIn(
@@ -267,7 +278,7 @@ class AttendanceService {
   }) async {
     // Validate QR code
     if (!_isValidOfficeQR(qrData)) {
-      throw ValidationException('Invalid QR code');
+      throw const ValidationException('Invalid QR code');
     }
 
     return await checkOut(
@@ -283,7 +294,7 @@ class AttendanceService {
       // Check if location services are enabled
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        throw LocationException('Location services are disabled');
+        throw const LocationException('Location services are disabled');
       }
 
       // Check location permission
@@ -291,12 +302,12 @@ class AttendanceService {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          throw LocationException('Location permission denied');
+          throw const LocationException('Location permission denied');
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        throw LocationException('Location permission permanently denied');
+        throw const LocationException('Location permission permanently denied');
       }
 
       // Get current position
@@ -351,7 +362,8 @@ class AttendanceService {
   }
 
   /// Determine attendance status based on check-in time
-  AttendanceStatus _determineAttendanceStatus(DateTime checkInTime, bool isWorkFromHome) {
+  AttendanceStatus _determineAttendanceStatus(
+      DateTime checkInTime, bool isWorkFromHome) {
     if (isWorkFromHome) {
       return AttendanceStatus.workFromHome;
     }
@@ -373,7 +385,8 @@ class AttendanceService {
   }
 
   /// Determine status after checkout
-  AttendanceStatus _determineCheckoutStatus(AttendanceModel attendance, DateTime checkOutTime) {
+  AttendanceStatus _determineCheckoutStatus(
+      AttendanceModel attendance, DateTime checkOutTime) {
     if (attendance.isWorkFromHome) {
       return AttendanceStatus.workFromHome;
     }
@@ -436,7 +449,8 @@ class AttendanceService {
     required int month,
   }) async {
     try {
-      return await _firestoreService.getMonthlyAttendanceSummary(employeeId, year, month);
+      return await _firestoreService.getMonthlyAttendanceSummary(
+          employeeId, year, month);
     } catch (e) {
       throw Exception('Failed to get attendance summary: $e');
     }
@@ -448,7 +462,8 @@ class AttendanceService {
     required DateTime startDate,
     required DateTime endDate,
   }) {
-    return _firestoreService.getEmployeeAttendance(employeeId, startDate, endDate);
+    return _firestoreService.getEmployeeAttendance(
+        employeeId, startDate, endDate);
   }
 
   /// Get today's attendance
@@ -467,12 +482,15 @@ class AttendanceService {
     required String approverUserId,
   }) async {
     try {
-      final attendanceId = '${employeeId}_${date.year}_${date.month}_${date.day}';
-      
+      final attendanceId =
+          '${employeeId}_${date.year}_${date.month}_${date.day}';
+
       // Check if attendance already exists
-      final existingAttendance = await _firestoreService.getAttendanceRecord(attendanceId);
+      final existingAttendance =
+          await _firestoreService.getAttendanceRecord(attendanceId);
       if (existingAttendance != null) {
-        throw BusinessLogicException('Attendance record already exists for this date');
+        throw const BusinessLogicException(
+            'Attendance record already exists for this date');
       }
 
       int? workingMinutes;
@@ -495,7 +513,7 @@ class AttendanceService {
         managerApproval: 'approved',
         approvedAt: DateTime.now(),
         approvedBy: approverUserId,
-        breaks: [],
+        breaks: const [],
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
