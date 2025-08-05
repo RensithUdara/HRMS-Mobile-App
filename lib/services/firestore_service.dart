@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/employee_model.dart';
+
 import '../models/attendance_model.dart';
+import '../models/employee_model.dart';
 import '../models/leave_model.dart';
 import '../models/payroll_model.dart';
 import '../utils/exceptions.dart';
@@ -61,12 +62,11 @@ class FirestoreService {
 
   /// Get all employees
   Stream<List<EmployeeModel>> getAllEmployees() {
-    return employees
-        .orderBy('firstName')
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => EmployeeModel.fromJson(doc.data() as Map<String, dynamic>))
-            .toList());
+    return employees.orderBy('firstName').snapshots().map((snapshot) => snapshot
+        .docs
+        .map(
+            (doc) => EmployeeModel.fromJson(doc.data() as Map<String, dynamic>))
+        .toList());
   }
 
   /// Get employees by department
@@ -76,7 +76,8 @@ class FirestoreService {
         .orderBy('firstName')
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => EmployeeModel.fromJson(doc.data() as Map<String, dynamic>))
+            .map((doc) =>
+                EmployeeModel.fromJson(doc.data() as Map<String, dynamic>))
             .toList());
   }
 
@@ -85,10 +86,11 @@ class FirestoreService {
     return employees
         .orderBy('firstName')
         .startAt([query])
-        .endAt([query + '\uf8ff'])
+        .endAt(['$query\uf8ff'])
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => EmployeeModel.fromJson(doc.data() as Map<String, dynamic>))
+            .map((doc) =>
+                EmployeeModel.fromJson(doc.data() as Map<String, dynamic>))
             .toList());
   }
 
@@ -129,7 +131,9 @@ class FirestoreService {
   /// Update attendance record
   Future<void> updateAttendanceRecord(AttendanceModel attendanceRecord) async {
     try {
-      await attendance.doc(attendanceRecord.id).update(attendanceRecord.toJson());
+      await attendance
+          .doc(attendanceRecord.id)
+          .update(attendanceRecord.toJson());
     } catch (e) {
       throw DatabaseException('Failed to update attendance record: $e');
     }
@@ -148,7 +152,8 @@ class FirestoreService {
         .orderBy('date', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => AttendanceModel.fromJson(doc.data() as Map<String, dynamic>))
+            .map((doc) =>
+                AttendanceModel.fromJson(doc.data() as Map<String, dynamic>))
             .toList());
   }
 
@@ -167,7 +172,8 @@ class FirestoreService {
           .get();
 
       if (snapshot.docs.isNotEmpty) {
-        return AttendanceModel.fromJson(snapshot.docs.first.data() as Map<String, dynamic>);
+        return AttendanceModel.fromJson(
+            snapshot.docs.first.data() as Map<String, dynamic>);
       }
       return null;
     } catch (e) {
@@ -199,8 +205,9 @@ class FirestoreService {
       double totalOvertimeHours = 0;
 
       for (final doc in snapshot.docs) {
-        final record = AttendanceModel.fromJson(doc.data() as Map<String, dynamic>);
-        
+        final record =
+            AttendanceModel.fromJson(doc.data() as Map<String, dynamic>);
+
         switch (record.status) {
           case AttendanceStatus.present:
             presentDays++;
@@ -231,7 +238,8 @@ class FirestoreService {
         'workFromHomeDays': workFromHomeDays,
         'totalWorkingHours': totalWorkingHours,
         'totalOvertimeHours': totalOvertimeHours,
-        'attendancePercentage': (presentDays / (presentDays + absentDays)) * 100,
+        'attendancePercentage':
+            (presentDays / (presentDays + absentDays)) * 100,
       };
     } catch (e) {
       throw DatabaseException('Failed to get attendance summary: $e');
@@ -278,23 +286,27 @@ class FirestoreService {
         .orderBy('appliedAt', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => LeaveModel.fromJson(doc.data() as Map<String, dynamic>))
+            .map((doc) =>
+                LeaveModel.fromJson(doc.data() as Map<String, dynamic>))
             .toList());
   }
 
   /// Get pending leave requests for manager approval
   Stream<List<LeaveModel>> getPendingLeaveRequests(String managerId) {
     return leaves
-        .where('status', isEqualTo: LeaveStatus.pending.toString().split('.').last)
+        .where('status',
+            isEqualTo: LeaveStatus.pending.toString().split('.').last)
         .orderBy('appliedAt', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => LeaveModel.fromJson(doc.data() as Map<String, dynamic>))
+            .map((doc) =>
+                LeaveModel.fromJson(doc.data() as Map<String, dynamic>))
             .toList());
   }
 
   /// Get leave balance for employee
-  Future<LeaveBalanceModel?> getLeaveBalance(String employeeId, int year) async {
+  Future<LeaveBalanceModel?> getLeaveBalance(
+      String employeeId, int year) async {
     try {
       final doc = await _firestore
           .collection('leave_balances')
@@ -363,19 +375,22 @@ class FirestoreService {
         .orderBy('month', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => PayrollModel.fromJson(doc.data() as Map<String, dynamic>))
+            .map((doc) =>
+                PayrollModel.fromJson(doc.data() as Map<String, dynamic>))
             .toList());
   }
 
   /// Get payroll records for processing
-  Stream<List<PayrollModel>> getPayrollRecordsForProcessing(int year, int month) {
+  Stream<List<PayrollModel>> getPayrollRecordsForProcessing(
+      int year, int month) {
     return payroll
         .where('year', isEqualTo: year)
         .where('month', isEqualTo: month)
         .orderBy('employeeName')
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => PayrollModel.fromJson(doc.data() as Map<String, dynamic>))
+            .map((doc) =>
+                PayrollModel.fromJson(doc.data() as Map<String, dynamic>))
             .toList());
   }
 
@@ -392,7 +407,8 @@ class FirestoreService {
   }
 
   /// Update company settings
-  Future<void> updateCompanySettings(String companyId, Map<String, dynamic> settings) async {
+  Future<void> updateCompanySettings(
+      String companyId, Map<String, dynamic> settings) async {
     try {
       await companies.doc(companyId).update(settings);
     } catch (e) {
@@ -402,26 +418,25 @@ class FirestoreService {
 
   /// Get all departments
   Stream<List<Map<String, dynamic>>> getAllDepartments() {
-    return departments
-        .orderBy('name')
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => doc.data() as Map<String, dynamic>)
-            .toList());
+    return departments.orderBy('name').snapshots().map((snapshot) => snapshot
+        .docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList());
   }
 
   /// Batch Operations
 
   /// Create multiple attendance records
-  Future<void> createBatchAttendanceRecords(List<AttendanceModel> records) async {
+  Future<void> createBatchAttendanceRecords(
+      List<AttendanceModel> records) async {
     try {
       final batch = _firestore.batch();
-      
+
       for (final record in records) {
         final docRef = attendance.doc(record.id);
         batch.set(docRef, record.toJson());
       }
-      
+
       await batch.commit();
     } catch (e) {
       throw DatabaseException('Failed to create batch attendance records: $e');
@@ -454,7 +469,7 @@ class FirestoreService {
   Future<Map<String, dynamic>> getCompanyStats() async {
     try {
       final employeeCount = await getEmployeeCount();
-      
+
       return {
         'totalEmployees': employeeCount,
         'activeEmployees': employeeCount, // TODO: Filter by status
@@ -469,10 +484,8 @@ class FirestoreService {
 
   /// Listen to employee changes
   Stream<EmployeeModel> listenToEmployee(String employeeId) {
-    return employees
-        .doc(employeeId)
-        .snapshots()
-        .map((doc) => EmployeeModel.fromJson(doc.data() as Map<String, dynamic>));
+    return employees.doc(employeeId).snapshots().map(
+        (doc) => EmployeeModel.fromJson(doc.data() as Map<String, dynamic>));
   }
 
   /// Listen to attendance changes for today
@@ -487,7 +500,8 @@ class FirestoreService {
         .orderBy('date')
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => AttendanceModel.fromJson(doc.data() as Map<String, dynamic>))
+            .map((doc) =>
+                AttendanceModel.fromJson(doc.data() as Map<String, dynamic>))
             .toList());
   }
 }
