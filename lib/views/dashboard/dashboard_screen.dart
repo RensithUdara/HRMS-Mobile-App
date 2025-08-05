@@ -55,9 +55,10 @@ class DashboardScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
-                      if (state is AuthAuthenticated) {
+                      if (state is AuthAuthenticated && state.userModel != null) {
+                        final user = state.userModel!;
                         return Text(
-                          '${state.user.firstName} ${state.user.lastName}',
+                          '${user.firstName ?? ''} ${user.lastName ?? ''}'.trim(),
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.white,

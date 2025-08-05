@@ -102,10 +102,4 @@ class UserModel extends Equatable {
         updatedAt,
         customClaims,
       ];
-        isActive,
-        lastLoginAt,
-        createdAt,
-        updatedAt,
-        customClaims,
-      ];
 }
