@@ -1,6 +1,7 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import '../utils/exceptions.dart';
@@ -191,7 +192,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required AuthService authService})
       : _authService = authService,
         super(AuthInitial()) {
-    
     on<AuthStarted>(_onAuthStarted);
     on<AuthSignInRequested>(_onSignInRequested);
     on<AuthSignInWithPhoneRequested>(_onSignInWithPhoneRequested);
@@ -213,15 +213,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
   }
 
-  Future<void> _onAuthStarted(AuthStarted event, Emitter<AuthState> emit) async {
+  Future<void> _onAuthStarted(
+      AuthStarted event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    
+
     try {
       final user = _authService.currentUser;
       if (user != null) {
         final userModel = await _authService.getUserDocument(user.uid);
         final roles = await _authService.getUserRoles();
-        
+
         emit(AuthAuthenticated(
           user: user,
           userModel: userModel,
@@ -231,19 +232,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthUnauthenticated());
       }
     } catch (e) {
-      emit(AuthError(message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
+      emit(AuthError(
+          message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
     }
   }
 
-  Future<void> _onSignInRequested(AuthSignInRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onSignInRequested(
+      AuthSignInRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    
+
     try {
       // Check if account is locked
       final isLocked = await _authService.isAccountLocked(event.email);
       if (isLocked) {
         emit(const AuthError(
-          message: 'Account is temporarily locked due to multiple failed login attempts',
+          message:
+              'Account is temporarily locked due to multiple failed login attempts',
           code: 'account-locked',
         ));
         return;
@@ -257,10 +261,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (credential.user != null) {
         // Reset failed login attempts on successful login
         await _authService.resetFailedLoginAttempts(credential.user!.uid);
-        
-        final userModel = await _authService.getUserDocument(credential.user!.uid);
+
+        final userModel =
+            await _authService.getUserDocument(credential.user!.uid);
         final roles = await _authService.getUserRoles();
-        
+
         emit(AuthAuthenticated(
           user: credential.user!,
           userModel: userModel,
@@ -270,11 +275,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       // Record failed login attempt
       await _authService.recordFailedLoginAttempt(event.email);
-      
+
       if (e is AuthException) {
         emit(AuthError(message: e.message, code: e.code));
       } else {
-        emit(AuthError(message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
+        emit(AuthError(
+            message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
       }
     }
   }
@@ -284,7 +290,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    
+
     try {
       final credential = await _authService.signInWithPhoneNumber(
         phoneNumber: event.phoneNumber,
@@ -293,9 +299,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       if (credential.user != null) {
-        final userModel = await _authService.getUserDocument(credential.user!.uid);
+        final userModel =
+            await _authService.getUserDocument(credential.user!.uid);
         final roles = await _authService.getUserRoles();
-        
+
         emit(AuthAuthenticated(
           user: credential.user!,
           userModel: userModel,
@@ -306,7 +313,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (e is AuthException) {
         emit(AuthError(message: e.message, code: e.code));
       } else {
-        emit(AuthError(message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
+        emit(AuthError(
+            message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
       }
     }
   }
@@ -316,11 +324,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    
+
     try {
       // Format Sri Lankan phone number
-      final formattedPhone = _authService.formatSriLankanPhoneNumber(event.phoneNumber);
-      
+      final formattedPhone =
+          _authService.formatSriLankanPhoneNumber(event.phoneNumber);
+
       if (!_authService.isValidSriLankanPhoneNumber(formattedPhone)) {
         emit(const AuthError(
           message: 'Please enter a valid Sri Lankan phone number',
@@ -334,11 +343,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         verificationCompleted: (PhoneAuthCredential credential) async {
           // Auto-verification completed
           try {
-            final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+            final userCredential =
+                await FirebaseAuth.instance.signInWithCredential(credential);
             if (userCredential.user != null) {
-              final userModel = await _authService.getUserDocument(userCredential.user!.uid);
+              final userModel =
+                  await _authService.getUserDocument(userCredential.user!.uid);
               final roles = await _authService.getUserRoles();
-              
+
               emit(AuthAuthenticated(
                 user: userCredential.user!,
                 userModel: userModel,
@@ -369,14 +380,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (e is AuthException) {
         emit(AuthError(message: e.message, code: e.code));
       } else {
-        emit(AuthError(message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
+        emit(AuthError(
+            message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
       }
     }
   }
 
-  Future<void> _onSignUpRequested(AuthSignUpRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onSignUpRequested(
+      AuthSignUpRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    
+
     try {
       final credential = await _authService.signUpWithEmailAndPassword(
         email: event.email,
@@ -386,10 +399,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (credential.user != null) {
         // Send email verification
         await _authService.sendEmailVerification();
-        
-        final userModel = await _authService.getUserDocument(credential.user!.uid);
+
+        final userModel =
+            await _authService.getUserDocument(credential.user!.uid);
         final roles = await _authService.getUserRoles();
-        
+
         emit(AuthAuthenticated(
           user: credential.user!,
           userModel: userModel,
@@ -400,19 +414,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (e is AuthException) {
         emit(AuthError(message: e.message, code: e.code));
       } else {
-        emit(AuthError(message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
+        emit(AuthError(
+            message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
       }
     }
   }
 
-  Future<void> _onSignOutRequested(AuthSignOutRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onSignOutRequested(
+      AuthSignOutRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    
+
     try {
       await _authService.signOut();
       emit(AuthUnauthenticated());
     } catch (e) {
-      emit(AuthError(message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
+      emit(AuthError(
+          message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
     }
   }
 
@@ -421,7 +438,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    
+
     try {
       await _authService.resetPassword(event.email);
       emit(AuthPasswordResetSent(email: event.email));
@@ -429,7 +446,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (e is AuthException) {
         emit(AuthError(message: e.message, code: e.code));
       } else {
-        emit(AuthError(message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
+        emit(AuthError(
+            message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
       }
     }
   }
@@ -439,7 +457,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    
+
     try {
       await _authService.updatePassword(event.newPassword);
       emit(AuthPasswordUpdated());
@@ -447,7 +465,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (e is AuthException) {
         emit(AuthError(message: e.message, code: e.code));
       } else {
-        emit(AuthError(message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
+        emit(AuthError(
+            message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
       }
     }
   }
@@ -457,7 +476,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    
+
     try {
       final isAvailable = await _authService.isBiometricAvailable();
       if (!isAvailable) {
@@ -470,7 +489,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       final isAuthenticated = await _authService.authenticateWithBiometrics();
       if (isAuthenticated) {
-        // If biometric authentication is successful, 
+        // If biometric authentication is successful,
         // you might want to sign in with stored credentials
         // For now, just emit that biometric is available
         emit(const AuthBiometricAvailable(isAvailable: true));
@@ -481,7 +500,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       }
     } catch (e) {
-      emit(AuthError(message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
+      emit(AuthError(
+          message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
     }
   }
 
@@ -494,7 +514,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (user != null) {
         final userModel = await _authService.getUserDocument(user.uid);
         final roles = await _authService.getUserRoles();
-        
+
         emit(AuthAuthenticated(
           user: user,
           userModel: userModel,
@@ -504,7 +524,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthUnauthenticated());
       }
     } catch (e) {
-      emit(AuthError(message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
+      emit(AuthError(
+          message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
     }
   }
 
