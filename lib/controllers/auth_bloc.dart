@@ -67,6 +67,26 @@ class AuthSignUpRequested extends AuthEvent {
 
 class AuthSignOutRequested extends AuthEvent {}
 
+// Aliases for consistent naming across the app
+class AuthLoginRequested extends AuthSignInRequested {
+  const AuthLoginRequested({
+    required super.email,
+    required super.password,
+    this.rememberMe = false,
+  });
+
+  final bool rememberMe;
+
+  @override
+  List<Object> get props => [email, password, rememberMe];
+}
+
+class AuthLogoutRequested extends AuthSignOutRequested {}
+
+class AuthGoogleSignInRequested extends AuthEvent {}
+
+class AuthBiometricRequested extends AuthBiometricSignInRequested {}
+
 class AuthPasswordResetRequested extends AuthEvent {
   final String email;
 
