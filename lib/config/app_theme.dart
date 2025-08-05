@@ -8,18 +8,18 @@ class AppTheme {
   static const Color errorColor = Color(0xFFD32F2F); // Red
   static const Color warningColor = Color(0xFFFF5722); // Deep Orange
   static const Color successColor = Color(0xFF2E7D32); // Dark Green
-  
+
   // Background colors
   static const Color backgroundLight = Color(0xFFF8F9FA);
   static const Color backgroundDark = Color(0xFF121212);
   static const Color surfaceLight = Color(0xFFFFFFFF);
   static const Color surfaceDark = Color(0xFF1E1E1E);
-  
+
   // Text colors
   static const Color textPrimary = Color(0xFF212121);
   static const Color textSecondary = Color(0xFF757575);
   static const Color textLight = Color(0xFFFFFFFF);
-  
+
   // Card and container colors
   static const Color cardLight = Color(0xFFFFFFFF);
   static const Color cardDark = Color(0xFF2C2C2C);
@@ -28,26 +28,24 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      
+
       // Color scheme
       colorScheme: const ColorScheme.light(
         primary: primaryColor,
         secondary: secondaryColor,
         tertiary: accentColor,
         error: errorColor,
-        background: backgroundLight,
         surface: surfaceLight,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onTertiary: Colors.white,
         onError: Colors.white,
-        onBackground: textPrimary,
         onSurface: textPrimary,
       ),
-      
+
       // Typography
       textTheme: _buildTextTheme(textPrimary),
-      
+
       // App bar theme
       appBarTheme: const AppBarTheme(
         backgroundColor: primaryColor,
@@ -60,7 +58,7 @@ class AppTheme {
           color: Colors.white,
         ),
       ),
-      
+
       // Card theme
       cardTheme: CardTheme(
         color: cardLight,
@@ -70,7 +68,7 @@ class AppTheme {
         ),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
-      
+
       // Button themes
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -87,7 +85,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: primaryColor,
@@ -97,7 +95,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: primaryColor,
@@ -112,7 +110,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       // Input decoration theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -133,24 +131,25 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: errorColor, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         labelStyle: TextStyle(color: Colors.grey[600]),
         hintStyle: TextStyle(color: Colors.grey[500]),
       ),
-      
+
       // Icon theme
       iconTheme: const IconThemeData(
         color: textSecondary,
         size: 24,
       ),
-      
+
       // Floating action button theme
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: secondaryColor,
         foregroundColor: Colors.white,
         elevation: 4,
       ),
-      
+
       // Bottom navigation bar theme
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: surfaceLight,
@@ -159,24 +158,24 @@ class AppTheme {
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
-      
+
       // Divider theme
       dividerTheme: DividerThemeData(
         color: Colors.grey[300],
         thickness: 1,
         space: 1,
       ),
-      
+
       // Switch theme
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return primaryColor;
           }
           return Colors.grey;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return primaryColor.withOpacity(0.5);
           }
           return Colors.grey.withOpacity(0.3);
@@ -189,26 +188,24 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      
+
       // Color scheme
       colorScheme: const ColorScheme.dark(
         primary: primaryColor,
         secondary: secondaryColor,
         tertiary: accentColor,
         error: errorColor,
-        background: backgroundDark,
         surface: surfaceDark,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onTertiary: Colors.white,
         onError: Colors.white,
-        onBackground: textLight,
         onSurface: textLight,
       ),
-      
+
       // Typography
       textTheme: _buildTextTheme(textLight),
-      
+
       // App bar theme
       appBarTheme: const AppBarTheme(
         backgroundColor: surfaceDark,
@@ -221,7 +218,7 @@ class AppTheme {
           color: textLight,
         ),
       ),
-      
+
       // Card theme
       cardTheme: CardTheme(
         color: cardDark,
@@ -231,7 +228,7 @@ class AppTheme {
         ),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
-      
+
       // Button themes
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -248,7 +245,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: primaryColor,
@@ -258,7 +255,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: primaryColor,
@@ -273,7 +270,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       // Input decoration theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -294,24 +291,25 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: errorColor, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         labelStyle: TextStyle(color: Colors.grey[400]),
         hintStyle: TextStyle(color: Colors.grey[500]),
       ),
-      
+
       // Icon theme
       iconTheme: const IconThemeData(
         color: textLight,
         size: 24,
       ),
-      
+
       // Floating action button theme
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: secondaryColor,
         foregroundColor: Colors.white,
         elevation: 4,
       ),
-      
+
       // Bottom navigation bar theme
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: surfaceDark,
@@ -320,24 +318,24 @@ class AppTheme {
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
-      
+
       // Divider theme
       dividerTheme: DividerThemeData(
         color: Colors.grey[700],
         thickness: 1,
         space: 1,
       ),
-      
+
       // Switch theme
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return primaryColor;
           }
           return Colors.grey;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return primaryColor.withOpacity(0.5);
           }
           return Colors.grey.withOpacity(0.3);
@@ -435,14 +433,14 @@ class AppTheme {
   static const Color leaveRejected = Color(0xFFD32F2F);
   static const Color payrollBonus = Color(0xFF2196F3);
   static const Color payrollDeduction = Color(0xFFFF5722);
-  
+
   // Gradient colors for cards and backgrounds
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primaryColor, Color(0xFF1565C0)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
-  
+
   static const LinearGradient secondaryGradient = LinearGradient(
     colors: [secondaryColor, Color(0xFFF57C00)],
     begin: Alignment.topLeft,
@@ -457,24 +455,24 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppTheme.textPrimary,
   );
-  
+
   static const TextStyle cardSubtitle = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppTheme.textSecondary,
   );
-  
+
   static const TextStyle buttonText = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w600,
   );
-  
+
   static const TextStyle caption = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: AppTheme.textSecondary,
   );
-  
+
   static const TextStyle overline = TextStyle(
     fontSize: 10,
     fontWeight: FontWeight.w500,
@@ -490,12 +488,12 @@ class AppDimensions {
   static const double paddingM = 16.0;
   static const double paddingL = 24.0;
   static const double paddingXL = 32.0;
-  
+
   static const double radiusS = 4.0;
   static const double radiusM = 8.0;
   static const double radiusL = 12.0;
   static const double radiusXL = 16.0;
-  
+
   static const double iconSizeS = 16.0;
   static const double iconSizeM = 24.0;
   static const double iconSizeL = 32.0;
