@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             );
           } else if (state is AuthAuthenticated) {
-            if (state.user.isProfileComplete) {
+            if (state.userModel != null && state.userModel!.isProfileComplete) {
               context.go('/dashboard');
             } else {
               context.go('/profile-setup');
