@@ -94,9 +94,20 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppTheme.primaryColor),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppTheme.primaryColor),
+          onPressed: () => context.go('/login'),
+        ),
+        title: const Text(
+          'Phone Verification',
+          style: TextStyle(
+            color: AppTheme.primaryColor,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -123,7 +134,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
           } else if (state is AuthAuthenticated) {
             // Redirect to profile setup if user data is incomplete
             if (state.userModel?.isProfileComplete == false) {
-              context.go('/auth/profile-setup');
+              context.go('/profile-setup');
             } else {
               context.go('/dashboard');
             }
@@ -222,7 +233,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
           // Back to Login Link
           Center(
             child: TextButton(
-              onPressed: () => context.go('/auth/login'),
+              onPressed: () => context.go('/login'),
               child: RichText(
                 text: const TextSpan(
                   text: 'Want to use email instead? ',

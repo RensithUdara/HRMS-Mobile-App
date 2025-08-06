@@ -51,7 +51,7 @@ class AppRouter {
         name: 'phone-verification',
         builder: (context, state) {
           final phone = state.extra as String?;
-          return PhoneVerificationScreen(phoneNumber: phone ?? '');
+          return PhoneVerificationScreen(phoneNumber: phone);
         },
       ),
       GoRoute(
