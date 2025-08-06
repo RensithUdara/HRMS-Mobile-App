@@ -8,7 +8,12 @@ import '../../controllers/auth_bloc.dart';
 import '../../utils/validators.dart';
 
 class PhoneVerificationScreen extends StatefulWidget {
-  const PhoneVerificationScreen({super.key});
+  final String? phoneNumber;
+  
+  const PhoneVerificationScreen({
+    super.key,
+    this.phoneNumber,
+  });
 
   @override
   State<PhoneVerificationScreen> createState() => _PhoneVerificationScreenState();
@@ -24,6 +29,15 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
   String _phoneNumber = '';
   int _resendTime = 60;
   bool _canResend = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.phoneNumber != null && widget.phoneNumber!.isNotEmpty) {
+      _phoneController.text = widget.phoneNumber!;
+      _phoneNumber = widget.phoneNumber!;
+    }
+  }
 
   @override
   void dispose() {
