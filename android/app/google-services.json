@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "444168307043",
+    "project_id": "hrms-mobile-app-e1066",
+    "storage_bucket": "hrms-mobile-app-e1066.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444168307043:android:40395feab0dea5ecf69356",
+        "android_client_info": {
+          "package_name": "com.srilanka.hrapp.hr_mobile_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYYooxj4wSB5un4ciGIUtwbOxPqCAlyUU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
