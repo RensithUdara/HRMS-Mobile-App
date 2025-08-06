@@ -197,6 +197,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignInWithPhoneRequested>(_onSignInWithPhoneRequested);
     on<AuthPhoneVerificationRequested>(_onPhoneVerificationRequested);
     on<AuthSignUpRequested>(_onSignUpRequested);
+    on<AuthGoogleSignInRequested>(_onGoogleSignInRequested);
     on<AuthSignOutRequested>(_onSignOutRequested);
     on<AuthPasswordResetRequested>(_onPasswordResetRequested);
     on<AuthPasswordUpdateRequested>(_onPasswordUpdateRequested);
@@ -417,6 +418,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthError(
             message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
       }
+    }
+  }
+
+  Future<void> _onGoogleSignInRequested(
+      AuthGoogleSignInRequested event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+
+    try {
+      // Temporarily emit error until Google Sign-In is properly implemented
+      emit(const AuthError(
+        message: 'Google Sign-In is not yet implemented',
+        code: 'not-implemented',
+      ));
+    } catch (e) {
+      emit(AuthError(
+          message: ExceptionHandler.getUserFriendlyMessage(e as Exception)));
     }
   }
 
