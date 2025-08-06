@@ -192,8 +192,8 @@ class PayrollService {
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         employeeId: employeeId,
         employeeName: employee.fullName,
-        employeeNumber: employee.employeeNumber,
-        department: employee.department,
+        employeeNumber: employee.employeeId,
+        department: employee.department.name,
         designation: employee.designation,
         year: month.year,
         month: month.month,
@@ -231,7 +231,7 @@ class PayrollService {
       await _firestore
           .collection(_payrollCollection)
           .doc(payroll.id)
-          .set(payroll.toMap());
+          .set(payroll.toJson());
     } catch (e) {
       throw Exception('Failed to generate payroll: $e');
     }
@@ -289,7 +289,7 @@ class PayrollService {
 
       final snapshot = await query.get();
       final payrolls = snapshot.docs
-          .map((doc) => PayrollModel.fromMap(doc.data() as Map<String, dynamic>))
+          .map((doc) => PayrollModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
 
       double totalGrossSalary = 0;
@@ -302,10 +302,10 @@ class PayrollService {
       for (final payroll in payrolls) {
         totalGrossSalary += payroll.grossSalary;
         totalNetSalary += payroll.netSalary;
-        totalDeductions += payroll.deductions;
-        totalEPF += payroll.epf;
-        totalETF += payroll.etf;
-        totalTax += payroll.tax;
+        totalDeductions += payroll.totalDeductions;
+        totalEPF += payroll.epfEmployeeContribution;
+        totalETF += payroll.etfContribution;
+        totalTax += payroll.payeTax;
       }
 
       return {
@@ -329,14 +329,24 @@ class PayrollService {
       final snapshot = await _firestore
           .collection(_payrollCollection)
           .where('employeeId', isEqualTo: employeeId)
-          .orderBy('payPeriodStart', descending: true)
+          .orderBy('year', descending: true)
+          .orderBy('month', descending: true)
           .get();
 
       return snapshot.docs
-          .map((doc) => PayrollModel.fromMap(doc.data()))
+          .map((doc) => PayrollModel.fromJson(doc.data()))
           .toList();
     } catch (e) {
       throw Exception('Failed to get employee payroll history: $e');
     }
+  }
+
+  // Helper method to get month name
+  String _getMonthName(int month) {
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return months[month - 1];
   }
 }
