@@ -7,7 +7,6 @@ import 'dart:io';
 
 import '../../config/app_theme.dart';
 import '../../controllers/auth_bloc.dart';
-import '../../models/user_model.dart';
 import '../../utils/validators.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
@@ -137,41 +136,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
   void _handleSubmit() {
     if (_formKey.currentState!.validate() && _validateRequiredFields()) {
-      final userModel = UserModel(
-        id: '', // Will be set by the auth service
-        email: '', // Will be set by the auth service
-        firstName: _firstNameController.text.trim(),
-        lastName: _lastNameController.text.trim(),
-        phoneNumber: _phoneController.text.trim(),
-        profilePhotoUrl: '', // Will be uploaded separately
-        roles: [UserRole.employee],
-        isActive: true,
-        isProfileComplete: true,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        lastLoginAt: DateTime.now(),
-        customClaims: {
-          'personalInfo': {
-            'nic': _nicController.text.trim(),
-            'dateOfBirth': _dateOfBirth!.toIso8601String(),
-            'gender': _selectedGender!,
-            'maritalStatus': _selectedMaritalStatus!,
-            'address': _addressController.text.trim(),
-            'emergencyContact': _emergencyContactController.text.trim(),
-            'emergencyPhone': _emergencyPhoneController.text.trim(),
-          },
-          'employmentInfo': {
-            'department': _selectedDepartment!,
-            'position': _selectedPosition!,
-            'employmentType': _selectedEmploymentType!,
-            'joiningDate': DateTime.now().toIso8601String(),
-            'baseSalary': double.parse(_baseSalaryController.text.trim()),
-            'epfNumber': _epfController.text.isNotEmpty ? _epfController.text.trim() : null,
-            'etfNumber': _etfController.text.isNotEmpty ? _etfController.text.trim() : null,
-          },
-        },
-      );
-
       // For now, show success message and navigate to dashboard
       // In a real app, you would save this to Firebase Firestore
       ScaffoldMessenger.of(context).showSnackBar(
