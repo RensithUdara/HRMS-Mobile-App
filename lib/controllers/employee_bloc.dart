@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../models/user_model.dart';
+import '../models/employee_model.dart';
 import '../services/employee_service.dart';
-import '../utils/exceptions.dart';
 
 // Employee Events
 abstract class EmployeeEvent extends Equatable {
@@ -25,7 +24,7 @@ class EmployeeLoadByIdRequested extends EmployeeEvent {
 }
 
 class EmployeeCreateRequested extends EmployeeEvent {
-  final UserModel employee;
+  final EmployeeModel employee;
 
   const EmployeeCreateRequested({required this.employee});
 
@@ -34,7 +33,7 @@ class EmployeeCreateRequested extends EmployeeEvent {
 }
 
 class EmployeeUpdateRequested extends EmployeeEvent {
-  final UserModel employee;
+  final EmployeeModel employee;
 
   const EmployeeUpdateRequested({required this.employee});
 
@@ -88,7 +87,7 @@ class EmployeeInitial extends EmployeeState {}
 class EmployeeLoading extends EmployeeState {}
 
 class EmployeeLoaded extends EmployeeState {
-  final List<UserModel> employees;
+  final List<EmployeeModel> employees;
 
   const EmployeeLoaded({required this.employees});
 
@@ -97,7 +96,7 @@ class EmployeeLoaded extends EmployeeState {
 }
 
 class EmployeeDetailLoaded extends EmployeeState {
-  final UserModel employee;
+  final EmployeeModel employee;
 
   const EmployeeDetailLoaded({required this.employee});
 
@@ -152,8 +151,6 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     try {
       final employees = await _employeeService.getAllEmployees();
       emit(EmployeeLoaded(employees: employees));
-    } on AppException catch (e) {
-      emit(EmployeeError(message: e.message, code: e.code));
     } catch (e) {
       emit(EmployeeError(message: 'Failed to load employees: $e'));
     }
@@ -171,8 +168,6 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
       } else {
         emit(const EmployeeError(message: 'Employee not found'));
       }
-    } on AppException catch (e) {
-      emit(EmployeeError(message: e.message, code: e.code));
     } catch (e) {
       emit(EmployeeError(message: 'Failed to load employee: $e'));
     }
@@ -188,8 +183,6 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
       emit(const EmployeeOperationSuccess(message: 'Employee created successfully'));
       // Reload all employees
       add(EmployeeLoadAllRequested());
-    } on AppException catch (e) {
-      emit(EmployeeError(message: e.message, code: e.code));
     } catch (e) {
       emit(EmployeeError(message: 'Failed to create employee: $e'));
     }
