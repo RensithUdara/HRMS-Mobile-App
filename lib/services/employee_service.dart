@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/user_model.dart';
+import '../models/employee_model.dart';
 
 class EmployeeService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String _collection = 'employees';
 
   // Get all employees
-  Future<List<UserModel>> getAllEmployees() async {
+  Future<List<EmployeeModel>> getAllEmployees() async {
     try {
       final querySnapshot = await _firestore.collection(_collection).get();
       return querySnapshot.docs
-          .map((doc) => UserModel.fromJson({...doc.data(), 'id': doc.id}))
+          .map((doc) => EmployeeModel.fromJson({...doc.data(), 'id': doc.id}))
           .toList();
     } catch (e) {
       throw Exception('Failed to fetch employees: $e');
@@ -18,11 +18,11 @@ class EmployeeService {
   }
 
   // Get employee by ID
-  Future<UserModel?> getEmployeeById(String employeeId) async {
+  Future<EmployeeModel?> getEmployeeById(String employeeId) async {
     try {
       final docSnapshot = await _firestore.collection(_collection).doc(employeeId).get();
       if (docSnapshot.exists) {
-        return UserModel.fromJson({...docSnapshot.data()!, 'id': docSnapshot.id});
+        return EmployeeModel.fromJson({...docSnapshot.data()!, 'id': docSnapshot.id});
       }
       return null;
     } catch (e) {
@@ -31,7 +31,7 @@ class EmployeeService {
   }
 
   // Create new employee
-  Future<String> createEmployee(UserModel employee) async {
+  Future<String> createEmployee(EmployeeModel employee) async {
     try {
       final docRef = await _firestore.collection(_collection).add(employee.toJson());
       return docRef.id;
@@ -41,7 +41,7 @@ class EmployeeService {
   }
 
   // Update employee
-  Future<void> updateEmployee(UserModel employee) async {
+  Future<void> updateEmployee(EmployeeModel employee) async {
     try {
       await _firestore.collection(_collection).doc(employee.id).update(employee.toJson());
     } catch (e) {
@@ -62,17 +62,17 @@ class EmployeeService {
   }
 
   // Search employees by name, email, or employee ID
-  Future<List<UserModel>> searchEmployees(String query) async {
+  Future<List<EmployeeModel>> searchEmployees(String query) async {
     try {
       final querySnapshot = await _firestore.collection(_collection).get();
       final allEmployees = querySnapshot.docs
-          .map((doc) => UserModel.fromJson({...doc.data(), 'id': doc.id}))
+          .map((doc) => EmployeeModel.fromJson({...doc.data(), 'id': doc.id}))
           .toList();
 
       // Filter employees based on search query
       return allEmployees.where((employee) {
-        final firstName = employee.firstName?.toLowerCase() ?? '';
-        final lastName = employee.lastName?.toLowerCase() ?? '';
+        final firstName = employee.firstName.toLowerCase();
+        final lastName = employee.lastName.toLowerCase();
         final email = employee.email.toLowerCase();
         final searchQuery = query.toLowerCase();
 
@@ -87,7 +87,7 @@ class EmployeeService {
   }
 
   // Filter employees by department, position, or active status
-  Future<List<UserModel>> filterEmployees({
+  Future<List<EmployeeModel>> filterEmployees({
     String? department,
     String? position,
     bool? isActive,
@@ -102,7 +102,7 @@ class EmployeeService {
 
       final querySnapshot = await query.get();
       final employees = querySnapshot.docs
-          .map((doc) => UserModel.fromJson({...doc.data() as Map<String, dynamic>, 'id': doc.id}))
+          .map((doc) => EmployeeModel.fromJson({...doc.data() as Map<String, dynamic>, 'id': doc.id}))
           .toList();
 
       // Apply additional filters that can't be done in Firestore query
@@ -110,14 +110,12 @@ class EmployeeService {
         bool matchesDepartment = true;
         bool matchesPosition = true;
 
-        if (department != null && employee.customClaims != null) {
-          final employmentInfo = employee.customClaims!['employmentInfo'] as Map<String, dynamic>?;
-          matchesDepartment = employmentInfo?['department'] == department;
+        if (department != null) {
+          matchesDepartment = employee.department.name == department;
         }
 
-        if (position != null && employee.customClaims != null) {
-          final employmentInfo = employee.customClaims!['employmentInfo'] as Map<String, dynamic>?;
-          matchesPosition = employmentInfo?['position'] == position;
+        if (position != null) {
+          matchesPosition = employee.designation == position;
         }
 
         return matchesDepartment && matchesPosition;
@@ -128,7 +126,7 @@ class EmployeeService {
   }
 
   // Get employees by department
-  Future<List<UserModel>> getEmployeesByDepartment(String department) async {
+  Future<List<EmployeeModel>> getEmployeesByDepartment(String department) async {
     return filterEmployees(department: department);
   }
 
@@ -146,10 +144,10 @@ class EmployeeService {
   }
 
   // Stream of all employees (for real-time updates)
-  Stream<List<UserModel>> employeesStream() {
+  Stream<List<EmployeeModel>> employeesStream() {
     return _firestore.collection(_collection).snapshots().map((snapshot) {
       return snapshot.docs
-          .map((doc) => UserModel.fromJson({...doc.data(), 'id': doc.id}))
+          .map((doc) => EmployeeModel.fromJson({...doc.data(), 'id': doc.id}))
           .toList();
     });
   }
