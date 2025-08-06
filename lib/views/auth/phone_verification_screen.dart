@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
 import '../../config/app_theme.dart';
 
 class PhoneVerificationScreen extends StatelessWidget {
   final String phoneNumber;
-  
+
   const PhoneVerificationScreen({
     super.key,
     required this.phoneNumber,

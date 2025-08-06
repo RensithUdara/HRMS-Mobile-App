@@ -332,7 +332,8 @@ class AppRouter {
     ];
 
     // Check if current route is public
-    final isPublicRoute = publicRoutes.any((route) => currentLocation.startsWith(route));
+    final isPublicRoute =
+        publicRoutes.any((route) => currentLocation.startsWith(route));
 
     // Handle authentication states
     if (authState is AuthUnauthenticated) {
@@ -342,15 +343,15 @@ class AppRouter {
       }
     } else if (authState is AuthAuthenticated) {
       // If user is authenticated but on auth routes, redirect to dashboard
-      if (currentLocation.startsWith('/login') || 
+      if (currentLocation.startsWith('/login') ||
           currentLocation.startsWith('/register') ||
           currentLocation.startsWith('/splash')) {
         return '/dashboard';
       }
-      
+
       // Check if profile setup is required
-      if (authState.userModel != null && 
-          !authState.userModel!.isProfileComplete && 
+      if (authState.userModel != null &&
+          !authState.userModel!.isProfileComplete &&
           currentLocation != '/profile-setup') {
         return '/profile-setup';
       }
@@ -372,8 +373,8 @@ class AppRouter {
     if (authState is AuthAuthenticated) {
       final userModel = authState.userModel;
       // Check if user has admin or manager role
-      if (userModel != null && 
-          !userModel.hasRole(UserRole.admin) && 
+      if (userModel != null &&
+          !userModel.hasRole(UserRole.admin) &&
           !userModel.hasRole(UserRole.manager)) {
         return '/unauthorized';
       }

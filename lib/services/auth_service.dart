@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:local_auth/local_auth.dart';
+
 import '../models/user_model.dart';
 import '../utils/exceptions.dart';
 
@@ -53,7 +54,8 @@ class AuthService {
         smsCode: smsCode,
       );
 
-      final userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
 
       // Update last login timestamp
       if (userCredential.user != null) {
@@ -227,15 +229,17 @@ class AuthService {
 
       final idTokenResult = await user.getIdTokenResult();
       final claims = idTokenResult.claims;
-      
+
       if (claims != null && claims.containsKey('roles')) {
         final rolesList = List<String>.from(claims['roles'] as List);
-        return rolesList.map((role) => UserRole.values.firstWhere(
-          (e) => e.toString().split('.').last == role,
-          orElse: () => UserRole.employee,
-        )).toList();
+        return rolesList
+            .map((role) => UserRole.values.firstWhere(
+                  (e) => e.toString().split('.').last == role,
+                  orElse: () => UserRole.employee,
+                ))
+            .toList();
       }
-      
+
       return [UserRole.employee]; // Default role
     } catch (e) {
       throw Exception('Error fetching user roles: $e');
@@ -301,22 +305,22 @@ class AuthService {
   bool isValidSriLankanPhoneNumber(String phoneNumber) {
     // Remove any spaces or special characters
     final cleanNumber = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
-    
+
     // Check for valid Sri Lankan phone number formats
     final patterns = [
-      RegExp(r'^\+94[0-9]{9}$'),      // +94XXXXXXXXX
-      RegExp(r'^94[0-9]{9}$'),        // 94XXXXXXXXX
-      RegExp(r'^0[0-9]{9}$'),         // 0XXXXXXXXX
-      RegExp(r'^[0-9]{10}$'),         // XXXXXXXXXX
+      RegExp(r'^\+94[0-9]{9}$'), // +94XXXXXXXXX
+      RegExp(r'^94[0-9]{9}$'), // 94XXXXXXXXX
+      RegExp(r'^0[0-9]{9}$'), // 0XXXXXXXXX
+      RegExp(r'^[0-9]{10}$'), // XXXXXXXXXX
     ];
-    
+
     return patterns.any((pattern) => pattern.hasMatch(cleanNumber));
   }
 
   /// Format Sri Lankan phone number
   String formatSriLankanPhoneNumber(String phoneNumber) {
     final cleanNumber = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
-    
+
     if (cleanNumber.startsWith('+94')) {
       return cleanNumber;
     } else if (cleanNumber.startsWith('94')) {
@@ -326,7 +330,7 @@ class AuthService {
     } else if (cleanNumber.length == 9) {
       return '+94$cleanNumber';
     }
-    
+
     return phoneNumber; // Return original if no pattern matches
   }
 
@@ -338,7 +342,7 @@ class AuthService {
       id: user.uid,
       email: user.email!,
       phoneNumber: user.phoneNumber,
-      roles: [UserRole.employee], // Default role
+      roles: const [UserRole.employee], // Default role
       isActive: true,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
@@ -368,9 +372,9 @@ class AuthService {
 
       final userData = querySnapshot.docs.first.data();
       final lockoutUntil = userData['lockoutUntil'] as Timestamp?;
-      
+
       if (lockoutUntil == null) return false;
-      
+
       return DateTime.now().isBefore(lockoutUntil.toDate());
     } catch (e) {
       return false;
@@ -390,10 +394,10 @@ class AuthService {
 
       final docRef = querySnapshot.docs.first.reference;
       final userData = querySnapshot.docs.first.data();
-      
+
       final failedAttempts = (userData['failedLoginAttempts'] as int? ?? 0) + 1;
       const maxAttempts = 5;
-      
+
       final updateData = <String, dynamic>{
         'failedLoginAttempts': failedAttempts,
         'lastFailedLoginAt': FieldValue.serverTimestamp(),

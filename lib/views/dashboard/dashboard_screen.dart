@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../controllers/auth_bloc.dart';
 import '../../config/app_theme.dart';
+import '../../controllers/auth_bloc.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -55,10 +55,12 @@ class DashboardScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
-                      if (state is AuthAuthenticated && state.userModel != null) {
+                      if (state is AuthAuthenticated &&
+                          state.userModel != null) {
                         final user = state.userModel!;
                         return Text(
-                          '${user.firstName ?? ''} ${user.lastName ?? ''}'.trim(),
+                          '${user.firstName ?? ''} ${user.lastName ?? ''}'
+                              .trim(),
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.white,
@@ -77,9 +79,9 @@ class DashboardScreen extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 20),
-            
+
             // Quick Actions
             const Text(
               'Quick Actions',
@@ -89,7 +91,7 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -128,9 +130,9 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 20),
-            
+
             // Recent Activities
             const Text(
               'Recent Activities',
@@ -140,7 +142,7 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             _buildActivityCard(
               'Checked in at 9:00 AM',
               'Today',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../config/app_theme.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -265,7 +266,7 @@ class CustomDateField extends StatelessWidget {
             );
           },
         );
-        
+
         if (date != null) {
           controller.text = '${date.day}/${date.month}/${date.year}';
         }

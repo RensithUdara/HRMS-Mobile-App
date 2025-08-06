@@ -153,9 +153,9 @@ class _SplashScreenState extends State<SplashScreen>
                             );
                           },
                         ),
-                        
+
                         const SizedBox(height: 30),
-                        
+
                         // Animated App Title
                         AnimatedBuilder(
                           animation: _textOpacity,
@@ -209,17 +209,18 @@ class _SplashScreenState extends State<SplashScreen>
                         height: 40,
                         child: CircularProgressIndicator(
                           strokeWidth: 3,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 20),
-                      
+
                       // Loading Text
                       BlocBuilder<AuthBloc, AuthState>(
                         builder: (context, state) {
                           String loadingText = 'Initializing...';
-                          
+
                           if (state is AuthLoading) {
                             loadingText = 'Checking authentication...';
                           } else if (state is AuthAuthenticated) {
@@ -229,7 +230,7 @@ class _SplashScreenState extends State<SplashScreen>
                           } else if (state is AuthError) {
                             loadingText = 'Something went wrong';
                           }
-                          
+
                           return AnimatedSwitcher(
                             duration: const Duration(milliseconds: 300),
                             child: Text(

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../controllers/auth_bloc.dart';
 import '../../config/app_theme.dart';
-import '../../widgets/custom_text_field.dart';
+import '../../controllers/auth_bloc.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 40),
-                  
+
                   // Logo and Title
                   Center(
                     child: Column(
@@ -106,7 +106,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 20),
                         Text(
                           'Welcome Back',
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.textPrimary,
                               ),
@@ -114,16 +117,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 8),
                         Text(
                           'Sign in to your HR account',
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: AppTheme.textSecondary,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: AppTheme.textSecondary,
+                                  ),
                         ),
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 40),
-                  
+
                   // Email Field
                   CustomTextField(
                     controller: _emailController,
@@ -135,15 +139,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
                       }
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value)) {
                         return 'Please enter a valid email';
                       }
                       return null;
                     },
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Password Field
                   CustomTextField(
                     controller: _passwordController,
@@ -153,7 +158,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     prefixIcon: Icons.lock_outlined,
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
                       onPressed: () {
                         setState(() {
@@ -171,9 +178,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Remember Me and Forgot Password
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -200,9 +207,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Login Button
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
@@ -213,9 +220,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Divider
                   Row(
                     children: [
@@ -224,17 +231,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
                           'OR',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppTheme.textSecondary,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: AppTheme.textSecondary,
+                                  ),
                         ),
                       ),
                       Expanded(child: Divider(color: Colors.grey[300])),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Alternative Login Methods
                   Row(
                     children: [
@@ -261,9 +269,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // Sign Up Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -278,9 +286,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // App Version
                   Center(
                     child: Text(

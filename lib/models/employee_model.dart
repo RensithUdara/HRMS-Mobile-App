@@ -4,14 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'employee_model.g.dart';
 
 /// Employee designation levels
-enum DesignationLevel {
-  junior,
-  senior,
-  lead,
-  manager,
-  director,
-  executive
-}
+enum DesignationLevel { junior, senior, lead, manager, director, executive }
 
 /// Department types in the company
 enum Department {
@@ -28,13 +21,7 @@ enum Department {
 }
 
 /// Employment status
-enum EmploymentStatus {
-  active,
-  inactive,
-  terminated,
-  resigned,
-  onLeave
-}
+enum EmploymentStatus { active, inactive, terminated, resigned, onLeave }
 
 /// Employee profile model
 @JsonSerializable()
@@ -53,19 +40,19 @@ class EmployeeModel extends Equatable {
   final String nationality;
   final String religion;
   final String maritalStatus;
-  
+
   // Address Information
   final String permanentAddress;
   final String currentAddress;
   final String city;
   final String province;
   final String postalCode;
-  
+
   // Emergency Contact
   final String emergencyContactName;
   final String emergencyContactRelationship;
   final String emergencyContactPhone;
-  
+
   // Professional Information
   final Department department;
   final String designation;
@@ -77,20 +64,20 @@ class EmployeeModel extends Equatable {
   final EmploymentStatus status;
   final String employmentType; // permanent, contract, intern
   final String workLocation; // office, remote, hybrid
-  
+
   // Salary Information
   final double basicSalary;
   final double? allowances;
   final String? bankName;
   final String? bankAccountNumber;
   final String? bankBranch;
-  
+
   // Documents
   final String? profilePhotoUrl;
   final String? cvUrl;
   final String? nicCopyUrl;
   final List<String> certificateUrls;
-  
+
   // System Information
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -145,7 +132,8 @@ class EmployeeModel extends Equatable {
     this.updatedBy,
   });
 
-  factory EmployeeModel.fromJson(Map<String, dynamic> json) => _$EmployeeModelFromJson(json);
+  factory EmployeeModel.fromJson(Map<String, dynamic> json) =>
+      _$EmployeeModelFromJson(json);
   Map<String, dynamic> toJson() => _$EmployeeModelToJson(this);
 
   String get fullName {
@@ -158,7 +146,7 @@ class EmployeeModel extends Equatable {
   int get ageInYears {
     final now = DateTime.now();
     int age = now.year - dateOfBirth.year;
-    if (now.month < dateOfBirth.month || 
+    if (now.month < dateOfBirth.month ||
         (now.month == dateOfBirth.month && now.day < dateOfBirth.day)) {
       age--;
     }
@@ -168,7 +156,7 @@ class EmployeeModel extends Equatable {
   int get yearsOfService {
     final now = DateTime.now();
     int years = now.year - joinDate.year;
-    if (now.month < joinDate.month || 
+    if (now.month < joinDate.month ||
         (now.month == joinDate.month && now.day < joinDate.day)) {
       years--;
     }
@@ -190,7 +178,8 @@ class EmployeeModel extends Equatable {
   // EPF calculation (Employee: 8%, Employer: 12%)
   double get epfEmployeeContribution => basicSalary * 0.08;
   double get epfEmployerContribution => basicSalary * 0.12;
-  double get totalEpfContribution => epfEmployeeContribution + epfEmployerContribution;
+  double get totalEpfContribution =>
+      epfEmployeeContribution + epfEmployerContribution;
 
   // ETF calculation (Employer: 3%)
   double get etfContribution => basicSalary * 0.03;
@@ -263,8 +252,10 @@ class EmployeeModel extends Equatable {
       province: province ?? this.province,
       postalCode: postalCode ?? this.postalCode,
       emergencyContactName: emergencyContactName ?? this.emergencyContactName,
-      emergencyContactRelationship: emergencyContactRelationship ?? this.emergencyContactRelationship,
-      emergencyContactPhone: emergencyContactPhone ?? this.emergencyContactPhone,
+      emergencyContactRelationship:
+          emergencyContactRelationship ?? this.emergencyContactRelationship,
+      emergencyContactPhone:
+          emergencyContactPhone ?? this.emergencyContactPhone,
       department: department ?? this.department,
       designation: designation ?? this.designation,
       designationLevel: designationLevel ?? this.designationLevel,

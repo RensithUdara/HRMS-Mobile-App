@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../config/app_theme.dart';
 
 class CustomButton extends StatelessWidget {
@@ -318,7 +319,7 @@ class CustomButtonGroup extends StatelessWidget {
       } else {
         result.add(children[i]);
       }
-      
+
       if (i < children.length - 1) {
         if (direction == Axis.horizontal) {
           result.add(SizedBox(width: spacing));

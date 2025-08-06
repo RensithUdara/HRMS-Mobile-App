@@ -1,32 +1,30 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+import 'config/app_router.dart';
+// Config
+import 'config/app_theme.dart';
+// Controllers
+import 'controllers/auth_bloc.dart';
 // Services
 import 'services/auth_service.dart';
 import 'services/firestore_service.dart';
-import 'services/storage_service.dart';
 import 'services/notification_service.dart';
-
-// Controllers
-import 'controllers/auth_bloc.dart';
-
-// Config
-import 'config/app_theme.dart';
-import 'config/app_router.dart';
+import 'services/storage_service.dart';
 
 // Firebase Options (you need to add this file after setting up Firebase)
 // import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize Firebase
   await Firebase.initializeApp(
-    // options: DefaultFirebaseOptions.currentPlatform,
-  );
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
 
   // Initialize Hive for local storage
   await Hive.initFlutter();
@@ -74,12 +72,12 @@ class MyApp extends StatelessWidget {
         child: MaterialApp.router(
           title: 'HR Mobile App',
           debugShowCheckedModeBanner: false,
-          
+
           // Theme
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: ThemeMode.system,
-          
+
           // Localization
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
@@ -91,7 +89,7 @@ class MyApp extends StatelessWidget {
             Locale('si', 'LK'), // Sinhala
             Locale('ta', 'LK'), // Tamil
           ],
-          
+
           // Routing
           routerConfig: AppRouter.router,
         ),

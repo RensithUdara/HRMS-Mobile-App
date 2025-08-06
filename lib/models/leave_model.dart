@@ -5,35 +5,25 @@ part 'leave_model.g.dart';
 
 /// Leave types as per Sri Lankan labor laws
 enum LeaveType {
-  annual,      // Annual leave (14 days per year)
-  casual,      // Casual leave (7 days per year)
-  sick,        // Sick leave (up to 21 days per year)
-  maternity,   // Maternity leave (84 days)
-  paternity,   // Paternity leave (3-7 days)
-  noPay,       // No-pay leave
-  halfDay,     // Half day leave
+  annual, // Annual leave (14 days per year)
+  casual, // Casual leave (7 days per year)
+  sick, // Sick leave (up to 21 days per year)
+  maternity, // Maternity leave (84 days)
+  paternity, // Paternity leave (3-7 days)
+  noPay, // No-pay leave
+  halfDay, // Half day leave
   compensatory, // Compensatory leave for overtime
-  study,       // Study leave
+  study, // Study leave
   bereavement, // Bereavement leave
-  emergency,   // Emergency leave
-  medical,     // Medical leave with certificate
+  emergency, // Emergency leave
+  medical, // Medical leave with certificate
 }
 
 /// Leave status workflow
-enum LeaveStatus {
-  pending,
-  approved,
-  rejected,
-  cancelled,
-  withdrawn
-}
+enum LeaveStatus { pending, approved, rejected, cancelled, withdrawn }
 
 /// Leave approval levels
-enum ApprovalLevel {
-  manager,
-  hr,
-  admin
-}
+enum ApprovalLevel { manager, hr, admin }
 
 /// Leave request model
 @JsonSerializable()
@@ -92,7 +82,8 @@ class LeaveModel extends Equatable {
     required this.updatedAt,
   });
 
-  factory LeaveModel.fromJson(Map<String, dynamic> json) => _$LeaveModelFromJson(json);
+  factory LeaveModel.fromJson(Map<String, dynamic> json) =>
+      _$LeaveModelFromJson(json);
   Map<String, dynamic> toJson() => _$LeaveModelToJson(this);
 
   /// Get leave type display name
@@ -159,7 +150,9 @@ class LeaveModel extends Equatable {
 
   /// Format date range
   String get formattedDateRange {
-    if (startDate.day == endDate.day && startDate.month == endDate.month && startDate.year == endDate.year) {
+    if (startDate.day == endDate.day &&
+        startDate.month == endDate.month &&
+        startDate.year == endDate.year) {
       return '${startDate.day}/${startDate.month}/${startDate.year}';
     }
     return '${startDate.day}/${startDate.month}/${startDate.year} - ${endDate.day}/${endDate.month}/${endDate.year}';
@@ -168,7 +161,8 @@ class LeaveModel extends Equatable {
   /// Check if leave is current (ongoing)
   bool get isCurrent {
     final now = DateTime.now();
-    return now.isAfter(startDate) && now.isBefore(endDate.add(const Duration(days: 1)));
+    return now.isAfter(startDate) &&
+        now.isBefore(endDate.add(const Duration(days: 1)));
   }
 
   /// Check if leave is upcoming
@@ -190,31 +184,38 @@ class LeaveModel extends Equatable {
 
   /// Check if leave can be cancelled
   bool get canBeCancelled {
-    return (status == LeaveStatus.pending || status == LeaveStatus.approved) && isUpcoming;
+    return (status == LeaveStatus.pending || status == LeaveStatus.approved) &&
+        isUpcoming;
   }
 
   /// Get next required approval level
   ApprovalLevel? get nextApprovalLevel {
     if (status != LeaveStatus.pending) return null;
-    
-    final approvedBy = approvals.where((a) => a.isApproved).map((a) => a.level).toList();
-    
+
+    final approvedBy =
+        approvals.where((a) => a.isApproved).map((a) => a.level).toList();
+
     if (!approvedBy.contains(ApprovalLevel.manager)) {
       return ApprovalLevel.manager;
     }
-    
+
     // For certain leave types, HR approval is required
-    if ([LeaveType.maternity, LeaveType.paternity, LeaveType.medical, LeaveType.study].contains(leaveType)) {
+    if ([
+      LeaveType.maternity,
+      LeaveType.paternity,
+      LeaveType.medical,
+      LeaveType.study
+    ].contains(leaveType)) {
       if (!approvedBy.contains(ApprovalLevel.hr)) {
         return ApprovalLevel.hr;
       }
     }
-    
+
     // For long leaves (more than 5 days), admin approval might be required
     if (totalDays > 5 && !approvedBy.contains(ApprovalLevel.admin)) {
       return ApprovalLevel.admin;
     }
-    
+
     return null;
   }
 
@@ -268,8 +269,10 @@ class LeaveModel extends Equatable {
       isHalfDay: isHalfDay ?? this.isHalfDay,
       halfDayPeriod: halfDayPeriod ?? this.halfDayPeriod,
       reason: reason ?? this.reason,
-      medicalCertificateUrl: medicalCertificateUrl ?? this.medicalCertificateUrl,
-      supportingDocumentUrl: supportingDocumentUrl ?? this.supportingDocumentUrl,
+      medicalCertificateUrl:
+          medicalCertificateUrl ?? this.medicalCertificateUrl,
+      supportingDocumentUrl:
+          supportingDocumentUrl ?? this.supportingDocumentUrl,
       status: status ?? this.status,
       rejectionReason: rejectionReason ?? this.rejectionReason,
       approvals: approvals ?? this.approvals,
@@ -336,7 +339,8 @@ class LeaveApproval extends Equatable {
     required this.approvedAt,
   });
 
-  factory LeaveApproval.fromJson(Map<String, dynamic> json) => _$LeaveApprovalFromJson(json);
+  factory LeaveApproval.fromJson(Map<String, dynamic> json) =>
+      _$LeaveApprovalFromJson(json);
   Map<String, dynamic> toJson() => _$LeaveApprovalToJson(this);
 
   String get levelDisplayName {
@@ -381,7 +385,8 @@ class LeaveBalanceModel extends Equatable {
     required this.updatedAt,
   });
 
-  factory LeaveBalanceModel.fromJson(Map<String, dynamic> json) => _$LeaveBalanceModelFromJson(json);
+  factory LeaveBalanceModel.fromJson(Map<String, dynamic> json) =>
+      _$LeaveBalanceModelFromJson(json);
   Map<String, dynamic> toJson() => _$LeaveBalanceModelToJson(this);
 
   /// Get balance for a specific leave type
@@ -401,17 +406,18 @@ class LeaveBalanceModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, employeeId, year, balances, createdAt, updatedAt];
+  List<Object?> get props =>
+      [id, employeeId, year, balances, createdAt, updatedAt];
 }
 
 /// Individual leave balance for a specific type
 @JsonSerializable()
 class LeaveBalance extends Equatable {
   final LeaveType type;
-  final int entitled;   // Total entitled days for the year
-  final int used;       // Days already used
-  final int pending;    // Days in pending requests
-  final int available;  // Available days (entitled - used - pending)
+  final int entitled; // Total entitled days for the year
+  final int used; // Days already used
+  final int pending; // Days in pending requests
+  final int available; // Available days (entitled - used - pending)
   final double? encashable; // Days that can be encashed
   final DateTime? lastUpdated;
 
@@ -425,7 +431,8 @@ class LeaveBalance extends Equatable {
     this.lastUpdated,
   });
 
-  factory LeaveBalance.fromJson(Map<String, dynamic> json) => _$LeaveBalanceFromJson(json);
+  factory LeaveBalance.fromJson(Map<String, dynamic> json) =>
+      _$LeaveBalanceFromJson(json);
   Map<String, dynamic> toJson() => _$LeaveBalanceToJson(this);
 
   /// Calculate percentage used
