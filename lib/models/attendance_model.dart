@@ -4,20 +4,10 @@ import 'package:json_annotation/json_annotation.dart';
 part 'attendance_model.g.dart';
 
 /// Attendance entry types
-enum AttendanceType {
-  checkIn,
-  checkOut,
-  breakStart,
-  breakEnd
-}
+enum AttendanceType { checkIn, checkOut, breakStart, breakEnd }
 
 /// Attendance verification methods
-enum AttendanceMethod {
-  gps,
-  qrCode,
-  manual,
-  biometric
-}
+enum AttendanceMethod { gps, qrCode, manual, biometric }
 
 /// Attendance status
 enum AttendanceStatus {
@@ -88,7 +78,8 @@ class AttendanceModel extends Equatable {
     required this.updatedAt,
   });
 
-  factory AttendanceModel.fromJson(Map<String, dynamic> json) => _$AttendanceModelFromJson(json);
+  factory AttendanceModel.fromJson(Map<String, dynamic> json) =>
+      _$AttendanceModelFromJson(json);
   Map<String, dynamic> toJson() => _$AttendanceModelToJson(this);
 
   /// Calculate total working hours
@@ -112,7 +103,8 @@ class AttendanceModel extends Equatable {
   /// Check if employee is late (assuming 9:00 AM standard time)
   bool get isLate {
     if (checkInTime == null) return false;
-    final standardCheckIn = DateTime(date.year, date.month, date.day, 9, 0); // 9:00 AM
+    final standardCheckIn =
+        DateTime(date.year, date.month, date.day, 9, 0); // 9:00 AM
     return checkInTime!.isAfter(standardCheckIn);
   }
 
@@ -126,7 +118,8 @@ class AttendanceModel extends Equatable {
   /// Check if employee left early (assuming 6:00 PM standard time)
   bool get isEarlyLeave {
     if (checkOutTime == null) return false;
-    final standardCheckOut = DateTime(date.year, date.month, date.day, 18, 0); // 6:00 PM
+    final standardCheckOut =
+        DateTime(date.year, date.month, date.day, 18, 0); // 6:00 PM
     return checkOutTime!.isBefore(standardCheckOut);
   }
 
@@ -281,7 +274,8 @@ class BreakRecord extends Equatable {
     this.durationMinutes,
   });
 
-  factory BreakRecord.fromJson(Map<String, dynamic> json) => _$BreakRecordFromJson(json);
+  factory BreakRecord.fromJson(Map<String, dynamic> json) =>
+      _$BreakRecordFromJson(json);
   Map<String, dynamic> toJson() => _$BreakRecordToJson(this);
 
   /// Check if break is ongoing

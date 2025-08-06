@@ -4,12 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'user_model.g.dart';
 
 /// User roles in the HR system
-enum UserRole {
-  employee,
-  hr,
-  manager,
-  admin
-}
+enum UserRole { employee, hr, manager, admin }
 
 /// User authentication and profile model
 @JsonSerializable()
@@ -44,7 +39,8 @@ class UserModel extends Equatable {
     this.customClaims,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
   UserModel copyWith({

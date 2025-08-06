@@ -11,31 +11,46 @@ class AuthException implements Exception {
   factory AuthException.fromFirebaseAuthException(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
-        return const AuthException('No user found for that email.', 'user-not-found');
+        return const AuthException(
+            'No user found for that email.', 'user-not-found');
       case 'wrong-password':
-        return const AuthException('Wrong password provided for that user.', 'wrong-password');
+        return const AuthException(
+            'Wrong password provided for that user.', 'wrong-password');
       case 'email-already-in-use':
-        return const AuthException('The account already exists for that email.', 'email-already-in-use');
+        return const AuthException('The account already exists for that email.',
+            'email-already-in-use');
       case 'weak-password':
-        return const AuthException('The password provided is too weak.', 'weak-password');
+        return const AuthException(
+            'The password provided is too weak.', 'weak-password');
       case 'invalid-email':
-        return const AuthException('The email address is not valid.', 'invalid-email');
+        return const AuthException(
+            'The email address is not valid.', 'invalid-email');
       case 'user-disabled':
-        return const AuthException('This user account has been disabled.', 'user-disabled');
+        return const AuthException(
+            'This user account has been disabled.', 'user-disabled');
       case 'too-many-requests':
-        return const AuthException('Too many requests. Try again later.', 'too-many-requests');
+        return const AuthException(
+            'Too many requests. Try again later.', 'too-many-requests');
       case 'operation-not-allowed':
-        return const AuthException('Operation not allowed.', 'operation-not-allowed');
+        return const AuthException(
+            'Operation not allowed.', 'operation-not-allowed');
       case 'requires-recent-login':
-        return const AuthException('This operation requires recent authentication.', 'requires-recent-login');
+        return const AuthException(
+            'This operation requires recent authentication.',
+            'requires-recent-login');
       case 'network-request-failed':
-        return const AuthException('Network error. Please check your connection.', 'network-request-failed');
+        return const AuthException(
+            'Network error. Please check your connection.',
+            'network-request-failed');
       case 'invalid-verification-code':
-        return const AuthException('Invalid verification code.', 'invalid-verification-code');
+        return const AuthException(
+            'Invalid verification code.', 'invalid-verification-code');
       case 'invalid-verification-id':
-        return const AuthException('Invalid verification ID.', 'invalid-verification-id');
+        return const AuthException(
+            'Invalid verification ID.', 'invalid-verification-id');
       case 'session-expired':
-        return const AuthException('Session expired. Please sign in again.', 'session-expired');
+        return const AuthException(
+            'Session expired. Please sign in again.', 'session-expired');
       default:
         return AuthException(e.message ?? 'An unknown error occurred.', e.code);
     }
@@ -163,13 +178,14 @@ class ExceptionHandler {
   /// Check if exception is network related
   static bool isNetworkError(Exception exception) {
     return exception is NetworkException ||
-           (exception is AuthException && exception.code == 'network-request-failed');
+        (exception is AuthException &&
+            exception.code == 'network-request-failed');
   }
 
   /// Check if exception requires user authentication
   static bool requiresAuthentication(Exception exception) {
     return exception is AuthException &&
-           (exception.code == 'requires-recent-login' ||
+        (exception.code == 'requires-recent-login' ||
             exception.code == 'session-expired' ||
             exception.code == 'user-not-found');
   }
@@ -177,6 +193,7 @@ class ExceptionHandler {
   /// Check if exception is due to insufficient permissions
   static bool isPermissionError(Exception exception) {
     return exception is PermissionException ||
-           (exception is AuthException && exception.code == 'operation-not-allowed');
+        (exception is AuthException &&
+            exception.code == 'operation-not-allowed');
   }
 }

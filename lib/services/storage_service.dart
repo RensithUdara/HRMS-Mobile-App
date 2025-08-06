@@ -21,15 +21,17 @@ class StorageService {
   /// Upload profile photo
   Future<String> uploadProfilePhoto(String employeeId, XFile imageFile) async {
     try {
-      final fileName = 'profile_${employeeId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final fileName =
+          'profile_${employeeId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
       final ref = _storage.ref().child('$profilePhotos/$fileName');
-      
+
       final uploadTask = await ref.putFile(File(imageFile.path));
       final downloadUrl = await uploadTask.ref.getDownloadURL();
-      
+
       return downloadUrl;
     } on FirebaseException catch (e) {
-      throw StorageException('Failed to upload profile photo: ${e.message}', e.code);
+      throw StorageException(
+          'Failed to upload profile photo: ${e.message}', e.code);
     } catch (e) {
       throw StorageException('Failed to upload profile photo: $e');
     }
@@ -42,12 +44,14 @@ class StorageService {
     File file,
   ) async {
     try {
-      final fileName = '${documentType}_${employeeId}_${DateTime.now().millisecondsSinceEpoch}${path.extension(file.path)}';
-      final ref = _storage.ref().child('$employeeDocuments/$employeeId/$fileName');
-      
+      final fileName =
+          '${documentType}_${employeeId}_${DateTime.now().millisecondsSinceEpoch}${path.extension(file.path)}';
+      final ref =
+          _storage.ref().child('$employeeDocuments/$employeeId/$fileName');
+
       final uploadTask = await ref.putFile(file);
       final downloadUrl = await uploadTask.ref.getDownloadURL();
-      
+
       return downloadUrl;
     } on FirebaseException catch (e) {
       throw StorageException('Failed to upload document: ${e.message}', e.code);
@@ -63,15 +67,17 @@ class StorageService {
     File file,
   ) async {
     try {
-      final fileName = '${certificateName}_${employeeId}_${DateTime.now().millisecondsSinceEpoch}${path.extension(file.path)}';
+      final fileName =
+          '${certificateName}_${employeeId}_${DateTime.now().millisecondsSinceEpoch}${path.extension(file.path)}';
       final ref = _storage.ref().child('$certificates/$employeeId/$fileName');
-      
+
       final uploadTask = await ref.putFile(file);
       final downloadUrl = await uploadTask.ref.getDownloadURL();
-      
+
       return downloadUrl;
     } on FirebaseException catch (e) {
-      throw StorageException('Failed to upload certificate: ${e.message}', e.code);
+      throw StorageException(
+          'Failed to upload certificate: ${e.message}', e.code);
     } catch (e) {
       throw StorageException('Failed to upload certificate: $e');
     }
@@ -85,12 +91,14 @@ class StorageService {
     Uint8List pdfBytes,
   ) async {
     try {
-      final fileName = 'payslip_${employeeId}_${year}_${month.toString().padLeft(2, '0')}.pdf';
+      final fileName =
+          'payslip_${employeeId}_${year}_${month.toString().padLeft(2, '0')}.pdf';
       final ref = _storage.ref().child('$payslips/$employeeId/$year/$fileName');
-      
-      final uploadTask = await ref.putData(pdfBytes, SettableMetadata(contentType: 'application/pdf'));
+
+      final uploadTask = await ref.putData(
+          pdfBytes, SettableMetadata(contentType: 'application/pdf'));
       final downloadUrl = await uploadTask.ref.getDownloadURL();
-      
+
       return downloadUrl;
     } on FirebaseException catch (e) {
       throw StorageException('Failed to upload payslip: ${e.message}', e.code);
@@ -106,15 +114,17 @@ class StorageService {
     File file,
   ) async {
     try {
-      final fileName = 'leave_${leaveId}_${DateTime.now().millisecondsSinceEpoch}${path.extension(file.path)}';
+      final fileName =
+          'leave_${leaveId}_${DateTime.now().millisecondsSinceEpoch}${path.extension(file.path)}';
       final ref = _storage.ref().child('$leaveDocuments/$employeeId/$fileName');
-      
+
       final uploadTask = await ref.putFile(file);
       final downloadUrl = await uploadTask.ref.getDownloadURL();
-      
+
       return downloadUrl;
     } on FirebaseException catch (e) {
-      throw StorageException('Failed to upload leave document: ${e.message}', e.code);
+      throw StorageException(
+          'Failed to upload leave document: ${e.message}', e.code);
     } catch (e) {
       throw StorageException('Failed to upload leave document: $e');
     }
@@ -126,15 +136,17 @@ class StorageService {
     File file,
   ) async {
     try {
-      final fileName = '${documentName}_${DateTime.now().millisecondsSinceEpoch}${path.extension(file.path)}';
+      final fileName =
+          '${documentName}_${DateTime.now().millisecondsSinceEpoch}${path.extension(file.path)}';
       final ref = _storage.ref().child('$companyDocuments/$fileName');
-      
+
       final uploadTask = await ref.putFile(file);
       final downloadUrl = await uploadTask.ref.getDownloadURL();
-      
+
       return downloadUrl;
     } on FirebaseException catch (e) {
-      throw StorageException('Failed to upload company document: ${e.message}', e.code);
+      throw StorageException(
+          'Failed to upload company document: ${e.message}', e.code);
     } catch (e) {
       throw StorageException('Failed to upload company document: $e');
     }
@@ -166,12 +178,13 @@ class StorageService {
     try {
       final ref = _storage.ref().child('$employeeDocuments/$employeeId');
       final listResult = await ref.listAll();
-      
+
       for (final item in listResult.items) {
         await item.delete();
       }
     } on FirebaseException catch (e) {
-      throw StorageException('Failed to delete employee documents: ${e.message}', e.code);
+      throw StorageException(
+          'Failed to delete employee documents: ${e.message}', e.code);
     } catch (e) {
       throw StorageException('Failed to delete employee documents: $e');
     }
@@ -183,7 +196,8 @@ class StorageService {
       final ref = _storage.ref().child(filePath);
       return await ref.getDownloadURL();
     } on FirebaseException catch (e) {
-      throw StorageException('Failed to get download URL: ${e.message}', e.code);
+      throw StorageException(
+          'Failed to get download URL: ${e.message}', e.code);
     } catch (e) {
       throw StorageException('Failed to get download URL: $e');
     }
@@ -195,7 +209,8 @@ class StorageService {
       final ref = _storage.ref().child(filePath);
       return await ref.getMetadata();
     } on FirebaseException catch (e) {
-      throw StorageException('Failed to get file metadata: ${e.message}', e.code);
+      throw StorageException(
+          'Failed to get file metadata: ${e.message}', e.code);
     } catch (e) {
       throw StorageException('Failed to get file metadata: $e');
     }
@@ -255,7 +270,8 @@ class StorageService {
       final uploadTask = await ref.putFile(imageFile);
       return await uploadTask.ref.getDownloadURL();
     } on FirebaseException catch (e) {
-      throw StorageException('Failed to upload compressed image: ${e.message}', e.code);
+      throw StorageException(
+          'Failed to upload compressed image: ${e.message}', e.code);
     } catch (e) {
       throw StorageException('Failed to upload compressed image: $e');
     }
@@ -284,7 +300,8 @@ class StorageService {
       if (e.code == 'object-not-found') {
         return false;
       }
-      throw StorageException('Failed to check file existence: ${e.message}', e.code);
+      throw StorageException(
+          'Failed to check file existence: ${e.message}', e.code);
     } catch (e) {
       return false;
     }
@@ -365,7 +382,8 @@ class StorageService {
   /// Check if file is image
   bool isImageFile(String filePath) {
     final extension = getFileExtension(filePath);
-    return ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'].contains(extension);
+    return ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']
+        .contains(extension);
   }
 
   /// Check if file is PDF
@@ -383,7 +401,8 @@ class StorageService {
   String formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    if (bytes < 1024 * 1024 * 1024)
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
   }
 }

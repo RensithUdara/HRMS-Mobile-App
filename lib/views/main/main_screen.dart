@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controllers/auth_bloc.dart';
 import '../../config/app_theme.dart';
 
 class MainScreen extends StatefulWidget {
@@ -29,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
           setState(() {
             _selectedIndex = index;
           });
-          
+
           // Navigate based on selected index
           switch (index) {
             case 0:

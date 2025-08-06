@@ -4,17 +4,11 @@ import 'package:json_annotation/json_annotation.dart';
 part 'payroll_model.g.dart';
 
 /// Payroll status
-enum PayrollStatus {
-  draft,
-  calculated,
-  approved,
-  processed,
-  paid
-}
+enum PayrollStatus { draft, calculated, approved, processed, paid }
 
 /// Tax calculation methods
 enum TaxBracket {
-  noTax,      // Up to LKR 1,200,000
+  noTax, // Up to LKR 1,200,000
   sixPercent, // LKR 1,200,001 - 1,700,000
   twelvePercent, // LKR 1,700,001 - 2,200,000
   eighteenPercent, // LKR 2,200,001 - 2,700,000
@@ -34,7 +28,7 @@ class PayrollModel extends Equatable {
   final int year;
   final int month;
   final String payPeriod; // e.g., "January 2024"
-  
+
   // Basic Salary Components
   final double basicSalary;
   final double? overtimePay;
@@ -43,7 +37,7 @@ class PayrollModel extends Equatable {
   final double? allowances;
   final double? otherEarnings;
   final double grossSalary;
-  
+
   // Deductions
   final double epfEmployeeContribution; // 8%
   final double epfEmployerContribution; // 12%
@@ -53,11 +47,11 @@ class PayrollModel extends Equatable {
   final double? advanceDeductions;
   final double? otherDeductions;
   final double totalDeductions;
-  
+
   // Net Calculations
   final double netSalary;
   final double takeHomePay;
-  
+
   // Working Days & Hours
   final int workingDays;
   final int actualWorkingDays;
@@ -65,12 +59,12 @@ class PayrollModel extends Equatable {
   final double overtimeHours;
   final int leaveDays;
   final int absentDays;
-  
+
   // Bank Details
   final String? bankName;
   final String? bankAccountNumber;
   final String? bankBranch;
-  
+
   // Status & Approval
   final PayrollStatus status;
   final String? approvedBy;
@@ -78,11 +72,11 @@ class PayrollModel extends Equatable {
   final String? processedBy;
   final DateTime? processedAt;
   final DateTime? paidAt;
-  
+
   // Document URLs
   final String? payslipUrl;
   final String? taxCertificateUrl;
-  
+
   // Meta Information
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -137,16 +131,17 @@ class PayrollModel extends Equatable {
     this.notes,
   });
 
-  factory PayrollModel.fromJson(Map<String, dynamic> json) => _$PayrollModelFromJson(json);
+  factory PayrollModel.fromJson(Map<String, dynamic> json) =>
+      _$PayrollModelFromJson(json);
   Map<String, dynamic> toJson() => _$PayrollModelToJson(this);
 
   /// Calculate PAYE tax based on Sri Lankan tax brackets (2024)
   static double calculatePayeTax(double annualSalary) {
     if (annualSalary <= 1200000) return 0; // No tax up to LKR 1.2M
-    
+
     double tax = 0;
     double remainingSalary = annualSalary;
-    
+
     // Tax brackets for 2024
     const List<Map<String, dynamic>> brackets = [
       {'min': 0, 'max': 1200000, 'rate': 0.00},
@@ -156,20 +151,21 @@ class PayrollModel extends Equatable {
       {'min': 2700001, 'max': 3200000, 'rate': 0.24},
       {'min': 3200001, 'max': double.infinity, 'rate': 0.30},
     ];
-    
+
     for (final bracket in brackets) {
       final min = bracket['min'] as double;
       final max = bracket['max'] as double;
       final rate = bracket['rate'] as double;
-      
+
       if (remainingSalary <= min) break;
-      
-      final taxableAmount = remainingSalary > max ? max - min : remainingSalary - min;
+
+      final taxableAmount =
+          remainingSalary > max ? max - min : remainingSalary - min;
       tax += taxableAmount * rate;
-      
+
       if (remainingSalary <= max) break;
     }
-    
+
     return tax;
   }
 
@@ -181,7 +177,7 @@ class PayrollModel extends Equatable {
     return {
       'employee': basicSalary * 0.08, // 8%
       'employer': basicSalary * 0.12, // 12%
-      'total': basicSalary * 0.20,    // 20%
+      'total': basicSalary * 0.20, // 20%
     };
   }
 
@@ -191,7 +187,8 @@ class PayrollModel extends Equatable {
   }
 
   /// Get total employer contributions
-  double get totalEmployerContributions => epfEmployerContribution + etfContribution;
+  double get totalEmployerContributions =>
+      epfEmployerContribution + etfContribution;
 
   /// Get cost to company (CTC)
   double get costToCompany => grossSalary + totalEmployerContributions;
@@ -252,9 +249,9 @@ class PayrollModel extends Equatable {
   /// Format currency in LKR
   static String formatCurrency(double amount) {
     return 'LKR ${amount.toStringAsFixed(2).replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (Match m) => '${m[1]},',
-    )}';
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]},',
+        )}';
   }
 
   /// Get formatted gross salary
@@ -267,7 +264,8 @@ class PayrollModel extends Equatable {
   String get formattedTakeHomePay => formatCurrency(takeHomePay);
 
   /// Check if payroll can be edited
-  bool get canBeEdited => status == PayrollStatus.draft || status == PayrollStatus.calculated;
+  bool get canBeEdited =>
+      status == PayrollStatus.draft || status == PayrollStatus.calculated;
 
   /// Check if payroll can be approved
   bool get canBeApproved => status == PayrollStatus.calculated;
@@ -340,8 +338,10 @@ class PayrollModel extends Equatable {
       allowances: allowances ?? this.allowances,
       otherEarnings: otherEarnings ?? this.otherEarnings,
       grossSalary: grossSalary ?? this.grossSalary,
-      epfEmployeeContribution: epfEmployeeContribution ?? this.epfEmployeeContribution,
-      epfEmployerContribution: epfEmployerContribution ?? this.epfEmployerContribution,
+      epfEmployeeContribution:
+          epfEmployeeContribution ?? this.epfEmployeeContribution,
+      epfEmployerContribution:
+          epfEmployerContribution ?? this.epfEmployerContribution,
       etfContribution: etfContribution ?? this.etfContribution,
       payeTax: payeTax ?? this.payeTax,
       loanDeductions: loanDeductions ?? this.loanDeductions,
@@ -449,7 +449,8 @@ class SalaryComponent extends Equatable {
     this.description,
   });
 
-  factory SalaryComponent.fromJson(Map<String, dynamic> json) => _$SalaryComponentFromJson(json);
+  factory SalaryComponent.fromJson(Map<String, dynamic> json) =>
+      _$SalaryComponentFromJson(json);
   Map<String, dynamic> toJson() => _$SalaryComponentToJson(this);
 
   bool get isEarning => type == 'earning';
